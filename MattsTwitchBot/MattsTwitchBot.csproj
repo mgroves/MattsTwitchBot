@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CouchbaseNetClient" Version="2.7.6" />
+    <PackageReference Include="TwitchLib.Client" Version="3.0.6-CI-20190504-060134" />
+  </ItemGroup>
+
+</Project>
