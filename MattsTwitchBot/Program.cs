@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using Couchbase;
 using Couchbase.Configuration.Client;
 using Couchbase.Core;
+using MattsTwitchBot.CommandQuery;
+using MattsTwitchBot.CommandQuery.Commands;
+using Moq;
 using TwitchLib.Client;
+using TwitchLib.Client.Events;
 using TwitchLib.Client.Models;
 
 namespace MattsTwitchBot
 {
     class Program
     {
-        private static IBucket _bucket;
-        private static TwitchClient _client;
+        private static Commander _commander;
 
         static void Main(string[] args)
         {
@@ -21,31 +24,50 @@ namespace MattsTwitchBot
                 Servers = new List<Uri> { new Uri("http://localhost:8091") }
             });
             cluster.Authenticate("Administrator", "password");
-            _bucket = cluster.OpenBucket("twitchchat");
+            var bucket = cluster.OpenBucket("twitchchat");
+            //var bucket = new Mock<IBucket>().Object;
 
             // connect to twitch
             var credentials = new ConnectionCredentials(Config.Username, Config.OauthKey);
-            _client = new TwitchClient();
-            _client.Initialize(credentials, "matthewdgroves");
-            _client.OnMessageReceived += Client_OnMessageReceived;
-            _client.Connect();
+            var twitchClient = new TwitchClient();
 
+            // setup commander
+            _commander = new Commander(bucket, twitchClient);
+
+            // start listening to twitch
+            twitchClient.Initialize(credentials, "matthewdgroves");
+            twitchClient.OnMessageReceived += Client_OnMessageReceived;
+            twitchClient.Connect();
+
+            // don't end until I press enter
             Console.WriteLine("Press ENTER to stop this madness.");
             Console.ReadLine();
 
             cluster.Dispose();
-            _client.Disconnect();
+            twitchClient.Disconnect();
         }
 
         // listen for Twitch messages and store them in Couchbase
-        private static void Client_OnMessageReceived(object sender, TwitchLib.Client.Events.OnMessageReceivedArgs e)
+        private static void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            _bucket.Insert(new Document<dynamic>
+            var command = InstantiateCommand(e.ChatMessage);
+            _commander.Execute(command);
+        }
+
+        private static ICommand InstantiateCommand(ChatMessage chatMessage)
+        {
+            var messageText = chatMessage.Message;
+            switch (messageText)
             {
-                Id = Guid.NewGuid().ToString(),
-                Content = e.ChatMessage
-            });
-            Console.WriteLine($"Logged a message from {e.ChatMessage.DisplayName}.");
+                case var x when x.StartsWith("!help"):
+                    return new Help(chatMessage);
+                case var x when x.StartsWith("!currentproject"):
+                    return new CurrentProject(chatMessage);
+                case var x when x.StartsWith("!setcurrentproject"):
+                    return new SetCurrentProject(chatMessage);
+                default:
+                    return new StoreMessage(chatMessage);
+            }
         }
     }
 }
