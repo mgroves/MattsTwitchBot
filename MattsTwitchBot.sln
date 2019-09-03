@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattsTwitchBot", "MattsTwitchBot\MattsTwitchBot.csproj", "{9B09AAE4-1CC7-4733-BC8C-5FC4BD6AC8C5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MattsTwitchBot.Web", "MattsTwitchBot.Web\MattsTwitchBot.Web.csproj", "{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattsTwitchBot.Core", "MattsTwitchBot.Core\MattsTwitchBot.Core.csproj", "{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9B09AAE4-1CC7-4733-BC8C-5FC4BD6AC8C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9B09AAE4-1CC7-4733-BC8C-5FC4BD6AC8C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9B09AAE4-1CC7-4733-BC8C-5FC4BD6AC8C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9B09AAE4-1CC7-4733-BC8C-5FC4BD6AC8C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
