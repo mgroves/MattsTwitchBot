@@ -8,25 +8,29 @@ namespace MattsTwitchBot.Core.CommandQuery.Commands
     public class CurrentProject : ICommand
     {
         private readonly ChatMessage _message;
+        private readonly IBucket _bucket;
+        private readonly ITwitchClient _client;
 
-        public CurrentProject(ChatMessage chatMessage)
+        public CurrentProject(ChatMessage chatMessage, IBucket bucket, ITwitchClient client)
         {
             _message = chatMessage;
+            _bucket = bucket;
+            _client = client;
         }
 
-        public void Execute(IBucket bucket, ITwitchClient client)
+        public void Execute()
         {
             var currentProjectDocumentKey = "currentProject";
 
-            var currentProjectResult = bucket.Get<CurrentProjectInfo>(currentProjectDocumentKey);
+            var currentProjectResult = _bucket.Get<CurrentProjectInfo>(currentProjectDocumentKey);
             if (currentProjectResult == null || !currentProjectResult.Success)
             {
-                client.SendMessage(_message.Channel, "I haven't set any current project yet, sorry!");
+                _client.SendMessage(_message.Channel, "I haven't set any current project yet, sorry!");
                 return;
             }
 
             var currentProjectDoc = currentProjectResult.Value;
-            client.SendMessage(_message.Channel, $"Current Project is: " + currentProjectDoc.Url);
+            _client.SendMessage(_message.Channel, $"Current Project is: " + currentProjectDoc.Url);
         }
     }
 

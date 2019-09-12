@@ -29,7 +29,7 @@ namespace MattsTwitchBot.Core
         public Task StartAsync(CancellationToken cancellationToken)
         {
             // setup commander
-            _commander = new Commander(_bucket, _twitchClient);
+            _commander = new Commander();
 
             // start listening to twitch
             _twitchClient.Initialize(_credentials, "matthewdgroves");
@@ -45,19 +45,21 @@ namespace MattsTwitchBot.Core
             _commander.Execute(command);
         }
 
-        private static ICommand InstantiateCommand(ChatMessage chatMessage)
+        private ICommand InstantiateCommand(ChatMessage chatMessage)
         {
             var messageText = chatMessage.Message;
             switch (messageText)
             {
                 case var x when x.StartsWith("!help"):
-                    return new Help(chatMessage);
+                    return new Help(chatMessage, _twitchClient);
                 case var x when x.StartsWith("!currentproject"):
-                    return new CurrentProject(chatMessage);
+                    return new CurrentProject(chatMessage, _bucket, _twitchClient);
                 case var x when x.StartsWith("!setcurrentproject"):
-                    return new SetCurrentProject(chatMessage);
+                    return new SetCurrentProject(chatMessage, _bucket, _twitchClient);
+                case var x when x.StartsWith("!so "):
+                    return new ShoutOut(chatMessage, _twitchClient);
                 default:
-                    return new StoreMessage(chatMessage);
+                    return new StoreMessage(chatMessage,_bucket);
             }
         }
 

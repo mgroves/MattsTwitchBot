@@ -5,6 +5,6 @@ namespace MattsTwitchBot.Core.CommandQuery
 {
     public interface ICommand
     {
-        void Execute(IBucket bucket, ITwitchClient client);
+        void Execute();
     }
 }

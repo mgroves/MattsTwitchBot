@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using Couchbase.Core;
 using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models;
 
@@ -9,13 +8,15 @@ namespace MattsTwitchBot.Core.CommandQuery.Commands
     public class Help : ICommand
     {
         private readonly ChatMessage _message;
+        private readonly ITwitchClient _client;
 
-        public Help(ChatMessage chatMessage)
+        public Help(ChatMessage chatMessage, ITwitchClient client)
         {
             _message = chatMessage;
+            _client = client;
         }
 
-        public void Execute(IBucket bucket, ITwitchClient client)
+        public void Execute()
         {
             var sendWhisperTo = _message.Username;
 
@@ -24,7 +25,7 @@ namespace MattsTwitchBot.Core.CommandQuery.Commands
             sb.AppendLine($"\t!help - Show this message");
             sb.AppendLine($"\t!currentproject - More info about what I'm working on");
 
-            client.SendWhisper(sendWhisperTo, sb.ToString());
+            _client.SendWhisper(sendWhisperTo, sb.ToString());
 
             Console.WriteLine($"I just whispered !help to {_message.Username}");
         }
