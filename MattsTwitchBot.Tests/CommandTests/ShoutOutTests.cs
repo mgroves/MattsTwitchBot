@@ -1,4 +1,4 @@
-﻿using Couchbase.Core;
+﻿using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.CommandQuery.Commands;
 using Moq;
 using NUnit.Framework;
@@ -11,11 +11,13 @@ namespace MattsTwitchBot.Tests.CommandTests
     public class ShoutOutTests
     {
         private Mock<ITwitchClient> _mockClient;
+        private Mock<ITwitchApiWrapper> _mockApi;
 
         [SetUp]
         public void Setup()
         {
             _mockClient = new Mock<ITwitchClient>();
+            _mockApi = new Mock<ITwitchApiWrapper>();
         }
 
         [Test]
@@ -29,7 +31,7 @@ namespace MattsTwitchBot.Tests.CommandTests
                 .WithTwitchLibMessage(twitchLibMessage)
                 .WithIsSubscriber(false)
                 .Build();
-            var shout = new ShoutOut(chatMessage, _mockClient.Object);
+            var shout = new ShoutOut(chatMessage, _mockClient.Object, _mockApi.Object);
 
             // act
             shout.Execute();
@@ -50,7 +52,7 @@ namespace MattsTwitchBot.Tests.CommandTests
                 .WithIsSubscriber(true)
                 .WithMessage("!so")
                 .Build();
-            var shout = new ShoutOut(chatMessage, _mockClient.Object);
+            var shout = new ShoutOut(chatMessage, _mockClient.Object, _mockApi.Object);
 
             // act
             shout.Execute();
@@ -72,7 +74,9 @@ namespace MattsTwitchBot.Tests.CommandTests
                 .WithIsSubscriber(true)
                 .WithMessage($"!so {userName}")
                 .Build();
-            var shout = new ShoutOut(chatMessage, _mockClient.Object);
+            _mockApi.Setup(x => x.DoesUserExist(userName)).ReturnsAsync(true);
+            var shout = new ShoutOut(chatMessage, _mockClient.Object, _mockApi.Object);
+
             var expectedMessage = $"Hey everyone, check out @{userName}'s Twitch stream at https://twitch.tv/{userName}";
 
             // act
@@ -80,6 +84,52 @@ namespace MattsTwitchBot.Tests.CommandTests
 
             // assert
             _mockClient.Verify(x => x.SendMessage(It.IsAny<string>(), expectedMessage, false), Times.Once);
+        }
+
+        [Test]
+        public void ShoutOut_will_not_shout_if_the_given_username_isnt_a_real_twitch_user()
+        {
+            // arrange
+            var userLookup = "doesntmattereither";
+            var twitchLibMessage = TwitchLibMessageBuilder.Create()
+                .WithUsername("doesntmatter")
+                .Build();
+            var chatMessage = ChatMessageBuilder.Create()
+                .WithTwitchLibMessage(twitchLibMessage)
+                .WithIsSubscriber(true)
+                .WithMessage($"!so {userLookup}")
+                .Build();
+            _mockApi.Setup(x => x.DoesUserExist(userLookup)).ReturnsAsync(false);
+            var shout = new ShoutOut(chatMessage, _mockClient.Object, _mockApi.Object);
+
+            // act
+            shout.Execute();
+
+            // assert
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<string>(), It.IsAny<string>(), false), Times.Never);
+        }
+
+        [Test]
+        public void ShoutOut_WILL_shout_if_the_given_username_is_a_real_twitch_user()
+        {
+            // arrange
+            var userLookup = "doesntmattereither";
+            var twitchLibMessage = TwitchLibMessageBuilder.Create()
+                .WithUsername("doesntmatter")
+                .Build();
+            var chatMessage = ChatMessageBuilder.Create()
+                .WithTwitchLibMessage(twitchLibMessage)
+                .WithIsSubscriber(true)
+                .WithMessage($"!so {userLookup}")
+                .Build();
+            _mockApi.Setup(x => x.DoesUserExist(userLookup)).ReturnsAsync(true);
+            var shout = new ShoutOut(chatMessage, _mockClient.Object, _mockApi.Object);
+
+            // act
+            shout.Execute();
+
+            // assert
+            _mockClient.Verify(x => x.SendMessage(It.IsAny<string>(), It.IsAny<string>(), false), Times.Once);
         }
     }
 }

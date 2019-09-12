@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Couchbase.Core;
 using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models;
 
@@ -9,16 +8,18 @@ namespace MattsTwitchBot.Core.CommandQuery.Commands
     {
         private readonly ChatMessage _message;
         private readonly ITwitchClient _client;
+        private readonly ITwitchApiWrapper _api;
 
-        public ShoutOut(ChatMessage message, ITwitchClient client)
+        public ShoutOut(ChatMessage message, ITwitchClient client, ITwitchApiWrapper api)
         {
             _message = message;
             _client = client;
+            _api = api;
         }
 
         // TODO: refactor this, because I'll have to change Execute every time any command
         // needs another dependency!
-        public void Execute()
+        public async void Execute()
         {
             if (!_message.IsSubscriber)
                 return;
@@ -29,19 +30,13 @@ namespace MattsTwitchBot.Core.CommandQuery.Commands
             if (string.IsNullOrEmpty(userToShout))
                 return;
 
-            // TODO: verify that userToShout is an actual twitch user
-            if (!IsAValidTwitchUser(userToShout))
+            if (!await _api.DoesUserExist(userToShout))
                 return;
 
             var thisChannel = _message.Channel;
             var message = $"Hey everyone, check out @{userToShout}'s Twitch stream at https://twitch.tv/{userToShout}";
 
             _client.SendMessage(thisChannel, message);
-        }
-
-        private bool IsAValidTwitchUser(string user)
-        {
-            return true; // TODO: use twitch API
         }
 
         private string ParseUserNameFromCommand(string message)
