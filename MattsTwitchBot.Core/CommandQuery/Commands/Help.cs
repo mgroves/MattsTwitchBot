@@ -22,8 +22,7 @@ namespace MattsTwitchBot.Core.CommandQuery.Commands
 
             var sb = new StringBuilder();
             sb.AppendLine($"Hello {_message.Username}. Try these commands:");
-            sb.AppendLine($"\t!help - Show this message");
-            sb.AppendLine($"\t!currentproject - More info about what I'm working on");
+            sb.AppendLine($"!help !currentproject !so");
 
             _client.SendWhisper(sendWhisperTo, sb.ToString());
 

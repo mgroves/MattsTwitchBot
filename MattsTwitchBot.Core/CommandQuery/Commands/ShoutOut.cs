@@ -17,8 +17,6 @@ namespace MattsTwitchBot.Core.CommandQuery.Commands
             _api = api;
         }
 
-        // TODO: refactor this, because I'll have to change Execute every time any command
-        // needs another dependency!
         public async void Execute()
         {
             if (!_message.IsSubscriber)

@@ -1,7 +1,4 @@
-﻿using Couchbase.Core;
-using TwitchLib.Client.Interfaces;
-
-namespace MattsTwitchBot.Core.CommandQuery
+﻿namespace MattsTwitchBot.Core.CommandQuery
 {
     public interface ICommand
     {
