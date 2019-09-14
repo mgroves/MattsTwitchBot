@@ -1,11 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
-using MattsTwitchBot.Core.CommandQuery;
-using MattsTwitchBot.Core.CommandQuery.Commands;
+using MattsTwitchBot.Core.Requests;
+using MediatR;
 using Microsoft.Extensions.Hosting;
-using TwitchLib.Api;
-using TwitchLib.Client;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models;
@@ -14,35 +11,17 @@ namespace MattsTwitchBot.Core
 {
     public class MattsChatBotHostedService : IHostedService
     {
+        private readonly IMediator _mediator;
         private readonly ITwitchClient _twitchClient;
-        private readonly IBucket _bucket;
-        private readonly ConnectionCredentials _credentials;
-        private Commander _commander;
-        private TwitchApiWrapper _api;
 
-        public MattsChatBotHostedService(ITwitchBucketProvider bucketProvider)
+        public MattsChatBotHostedService(IMediator mediator, ITwitchClient twitchClient)
         {
-            // setup twitch chat
-            _credentials = new ConnectionCredentials(Config.Username, Config.OauthKey);
-            _twitchClient = new TwitchClient();
-
-            // setup couchbase
-            _bucket = bucketProvider.GetBucket();
-
-            // setup twitch API
-            var api = new TwitchAPI();
-            api.Settings.ClientId = Config.ApiClientId;
-            api.Settings.AccessToken = Config.ApiClientSecret;
-            _api = new TwitchApiWrapper(api);
+            _mediator = mediator;
+            _twitchClient = twitchClient;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            // setup commander
-            _commander = new Commander();
-
-            // start listening to twitch
-            _twitchClient.Initialize(_credentials, "matthewdgroves");
             _twitchClient.OnMessageReceived += Client_OnMessageReceived;
             _twitchClient.Connect();
 
@@ -51,25 +30,27 @@ namespace MattsTwitchBot.Core
 
         private void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
-            var command = InstantiateCommand(e.ChatMessage);
-            _commander.Execute(command);
+            var req = InstantiateRequest(e.ChatMessage);
+            _mediator.Send(req);
         }
 
-        private ICommand InstantiateCommand(ChatMessage chatMessage)
+        private IRequest InstantiateRequest(ChatMessage chatMessage)
         {
             var messageText = chatMessage.Message;
             switch (messageText)
             {
                 case var x when x.StartsWith("!help"):
-                    return new Help(chatMessage, _twitchClient);
+                    return new Help(chatMessage);
                 case var x when x.StartsWith("!currentproject"):
-                    return new CurrentProject(chatMessage, _bucket, _twitchClient);
+                    return new SayCurrentProject(chatMessage);
                 case var x when x.StartsWith("!setcurrentproject"):
-                    return new SetCurrentProject(chatMessage, _bucket, _twitchClient);
+                    return new SetCurrentProject(chatMessage);
                 case var x when x.StartsWith("!so "):
-                    return new ShoutOut(chatMessage, _twitchClient, _api);
+                    return new ShoutOut(chatMessage);
+                case var x when x.StartsWith("!profile"):
+                    return new ModifyProfile(chatMessage);
                 default:
-                    return new StoreMessage(chatMessage,_bucket);
+                    return new StoreMessage(chatMessage);
             }
         }
 

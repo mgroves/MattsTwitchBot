@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Couchbase.Extensions.DependencyInjection;
 using MattsTwitchBot.Core;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +11,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TwitchLib.Api;
+using TwitchLib.Client;
+using TwitchLib.Client.Interfaces;
+using TwitchLib.Client.Models;
+using IApplicationLifetime = Microsoft.AspNetCore.Hosting.IApplicationLifetime;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace MattsTwitchBot.Web
@@ -41,13 +48,29 @@ namespace MattsTwitchBot.Web
                 })
                 .AddCouchbaseBucket<ITwitchBucketProvider>("twitchchat");
 
+            services.AddMediatR(Assembly.GetAssembly(typeof(MattsChatBotHostedService)));
+
             services.AddSingleton<IHostedService, MattsChatBotHostedService>();
+            services.AddSingleton<ITwitchClient>(x =>
+            {
+                var credentials = new ConnectionCredentials(Config.Username, Config.OauthKey);
+                var twitchClient = new TwitchClient();
+                twitchClient.Initialize(credentials, "matthewdgroves");
+                return twitchClient;
+            });
+            services.AddSingleton<ITwitchApiWrapper>(x =>
+            {
+                var api = new TwitchAPI();
+                api.Settings.ClientId = Config.ApiClientId;
+                api.Settings.AccessToken = Config.ApiClientSecret;
+                return new TwitchApiWrapper(api);
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -69,6 +92,11 @@ namespace MattsTwitchBot.Web
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+            });
+
+            applicationLifetime.ApplicationStopped.Register(() =>
+            {
+                app.ApplicationServices.GetRequiredService<ICouchbaseLifetimeService>().Close();
             });
         }
     }
