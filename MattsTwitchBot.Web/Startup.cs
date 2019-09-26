@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Couchbase.Extensions.DependencyInjection;
 using MattsTwitchBot.Core;
-using MattsTwitchBot.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -16,8 +15,6 @@ using TwitchLib.Api;
 using TwitchLib.Client;
 using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models;
-using IApplicationLifetime = Microsoft.AspNetCore.Hosting.IApplicationLifetime;
-using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace MattsTwitchBot.Web
 {
@@ -67,13 +64,13 @@ namespace MattsTwitchBot.Web
                 return new TwitchApiWrapper(api);
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
         {
             if (env.IsDevelopment())
             {
@@ -90,16 +87,14 @@ namespace MattsTwitchBot.Web
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<TwitchHub>("/twitchHub");
-            });
+            app.UseRouting();
 
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapHub<TwitchHub>("/twitchHub");
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
             applicationLifetime.ApplicationStopped.Register(() =>
