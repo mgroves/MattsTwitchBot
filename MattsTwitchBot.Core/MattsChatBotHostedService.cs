@@ -56,6 +56,8 @@ namespace MattsTwitchBot.Core
                     return new SoundEffect("laugh");
                 case var x when (x == "!rimshot" || x == "!badumtss"):
                     return new SoundEffect("rimshot");
+                case var x when x.StartsWith("!sadtrombone"):
+                    return new SoundEffect("sadtrombone");
                 default:
                     return new StoreMessage(chatMessage);
             }

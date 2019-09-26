@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core.Requests;
@@ -31,9 +30,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
 
             _twitchClient.SendWhisper(sendWhisperTo, sb.ToString());
 
-            Console.WriteLine($"I just whispered !help to {sendWhisperTo}");
-
-            return default;
+            return Unit.Task;
         }
     }
 }

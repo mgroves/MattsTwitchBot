@@ -28,12 +28,12 @@ namespace MattsTwitchBot.Core.RequestHandlers
             if (currentProjectResult == null || !currentProjectResult.Success)
             {
                 _twitchClient.SendMessage(message.Channel, "I haven't set any current project yet, sorry!");
-                return default;
+                return Unit.Task;
             }
 
             var currentProjectDoc = currentProjectResult.Value;
             _twitchClient.SendMessage(message.Channel, $"Current Project is: " + currentProjectDoc.Url);
-            return default;
+            return Unit.Task;
         }
     }
 }

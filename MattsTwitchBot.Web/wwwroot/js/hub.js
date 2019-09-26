@@ -33,7 +33,10 @@ function GetSoundEffectFileName(soundEffectName) {
     if (soundEffectName === "rimshot") {
         return "media/rimshot.wav"; // https://freesound.org/people/xtrgamr/sounds/432972/
     }
-    return;
+    if (soundEffectName === "sadtrombone") {
+        return "media/sadtrombone.mp3"; // https://freesound.org/people/NotR/sounds/172949/
+    }
+    return "";
 }
 
 connection.start().then(function () {

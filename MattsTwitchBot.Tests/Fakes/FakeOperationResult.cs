@@ -9,6 +9,7 @@ namespace MattsTwitchBot.Tests.Fakes
     public class FakeOperationResult<T> : IOperationResult<T>
     {
         public T Value { get; set; }
+        public bool Success { get; set; }
 
         #region not used
         public bool ShouldRetry()
@@ -16,7 +17,6 @@ namespace MattsTwitchBot.Tests.Fakes
             throw new NotImplementedException();
         }
 
-        public bool Success { get; }
         public string Message { get; }
         public Exception Exception { get; }
         public bool IsNmv()
