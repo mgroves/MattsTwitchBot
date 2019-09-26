@@ -23,7 +23,6 @@ namespace MattsTwitchBot.Core.RequestHandlers
             if (!validSoundEffects.Contains(request.SoundEffectName))
                 return default;
 
-            // TODO: throttling here or throttling on client side?
             await _hub.Clients.All.SendAsync("SoundEffect", request.SoundEffectName, cancellationToken: cancellationToken);
             return default;
         }
