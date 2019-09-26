@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using MattsTwitchBot.Core.Requests;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Hosting;
 using TwitchLib.Client.Events;
 using TwitchLib.Client.Interfaces;
@@ -13,11 +14,13 @@ namespace MattsTwitchBot.Core
     {
         private readonly IMediator _mediator;
         private readonly ITwitchClient _twitchClient;
+        private readonly IHubContext<TwitchHub> _hub;
 
-        public MattsChatBotHostedService(IMediator mediator, ITwitchClient twitchClient)
+        public MattsChatBotHostedService(IMediator mediator, ITwitchClient twitchClient, IHubContext<TwitchHub> hub)
         {
             _mediator = mediator;
             _twitchClient = twitchClient;
+            _hub = hub;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -49,6 +52,10 @@ namespace MattsTwitchBot.Core
                     return new ShoutOut(chatMessage);
                 case var x when x.StartsWith("!profile"):
                     return new ModifyProfile(chatMessage);
+                case var x when x == "!laugh":
+                    return new SoundEffect("laugh");
+                case var x when (x == "!rimshot" || x == "!badumtss"):
+                    return new SoundEffect("rimshot");
                 default:
                     return new StoreMessage(chatMessage);
             }

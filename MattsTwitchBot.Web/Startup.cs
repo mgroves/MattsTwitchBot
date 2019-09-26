@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Couchbase.Extensions.DependencyInjection;
 using MattsTwitchBot.Core;
+using MattsTwitchBot.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -67,6 +68,8 @@ namespace MattsTwitchBot.Web
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,6 +89,11 @@ namespace MattsTwitchBot.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<TwitchHub>("/twitchHub");
+            });
 
             app.UseMvc(routes =>
             {

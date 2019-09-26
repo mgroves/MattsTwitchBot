@@ -23,10 +23,11 @@ namespace MattsTwitchBot.Core.RequestHandlers
             var sendWhisperTo = message.Username;
 
             // TODO: maybe this should provide specific help with commands too
+            // e.g. "!help so" whispers help on what "!so" does
 
             var sb = new StringBuilder();
             sb.AppendLine($"Hello {sendWhisperTo}. Try these commands:");
-            sb.AppendLine($"!help !currentproject !so");
+            sb.AppendLine($"!help !currentproject !so !profile !laugh !rimshot !badumtss");
 
             _twitchClient.SendWhisper(sendWhisperTo, sb.ToString());
 
