@@ -5,6 +5,7 @@ using Couchbase;
 using Couchbase.Core;
 using MattsTwitchBot.Core.Requests;
 using MediatR;
+using TwitchLib.Client.Models;
 
 namespace MattsTwitchBot.Core.RequestHandlers
 {
@@ -17,16 +18,15 @@ namespace MattsTwitchBot.Core.RequestHandlers
             _bucket = twitchBucketProvider.GetBucket();
         }
 
-        public Task<Unit> Handle(StoreMessage request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(StoreMessage request, CancellationToken cancellationToken)
         {
             var message = request.Message;
-            var result = _bucket.Insert(new Document<dynamic>
+            await _bucket.InsertAsync(new Document<ChatMessage>
             {
                 Id = Guid.NewGuid().ToString(),
                 Content = message
             });
-            Console.WriteLine($"Logged a message from {message.DisplayName}.");
-            return default;
+            return Unit.Value;
         }
     }
 }
