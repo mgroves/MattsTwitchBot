@@ -12,7 +12,7 @@ using NUnit.Framework;
 using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models.Builders;
 
-namespace MattsTwitchBot.Tests.CommandTests
+namespace MattsTwitchBot.Tests.RequestHandlerTests
 {
     [TestFixture]
     public class ShoutOutTests
