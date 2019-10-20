@@ -7,6 +7,10 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Remove="wwwroot\js\tests\hubTests.js" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Couchbase.Extensions.DependencyInjection" Version="2.0.2" />
@@ -24,6 +28,11 @@
   <ItemGroup>
     <Folder Include="Views\Shared\" />
     <Folder Include="wwwroot\media\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <None Include="wwwroot\js\tests\hubTests.js" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MattsTwitchBot.Web", "Matts
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MattsTwitchBot.Core", "MattsTwitchBot.Core\MattsTwitchBot.Core.csproj", "{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattsTwitchBot.Tests", "MattsTwitchBot.Tests\MattsTwitchBot.Tests.csproj", "{AB6E8FB2-93C2-4C15-9BE5-34E738869464}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MattsTwitchBot.Tests", "MattsTwitchBot.Tests\MattsTwitchBot.Tests.csproj", "{AB6E8FB2-93C2-4C15-9BE5-34E738869464}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB0F3F0C-B65B-4A7B-BD00-52E05CFFC52A}"
+	ProjectSection(SolutionItems) = preProject
+		README.adoc = README.adoc
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

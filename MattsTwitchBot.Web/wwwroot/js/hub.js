@@ -1,29 +1,20 @@
-﻿var connection = new signalR.HubConnectionBuilder().withUrl("/twitchHub").build();
+﻿import { ThrottleChecker } from './modules/ThrottleChecker.js';
 
-connection.on("SoundEffect",
-    function (soundEffectName) {
-        var filename = GetSoundEffectFileName(soundEffectName);
-        if (!filename)
-            return;
+var connection = new signalR.HubConnectionBuilder().withUrl("/twitchHub").build();
 
-        if (!IsThrottled(soundEffectName + "_throttle")) {
-            var audio = new Audio(filename);    // https://stackoverflow.com/questions/9419263/playing-audio-with-javascript
-            audio.play();
-        }
+connection.on("SoundEffect", HandleSoundEffect);
+
+function HandleSoundEffect(soundEffectName) {
+    var throttle = new ThrottleChecker(localStorage);
+
+    var filename = GetSoundEffectFileName(soundEffectName);
+    if (!filename)
+        return;
+
+    if (!throttle.isThrottled(soundEffectName + "_throttle")) {
+        var audio = new window.Audio(filename);    // https://stackoverflow.com/questions/9419263/playing-audio-with-javascript
+        audio.play();
     }
-);
-
-function IsThrottled(throttleKey) {
-    var throttleTimestamp = localStorage.getItem(throttleKey);
-    var threshHold = 300000; // five minutes
-    if (throttleTimestamp) {
-        var diff = Date.now() - throttleTimestamp;
-        if (diff < threshHold) {
-            return true;
-        }
-    }
-    localStorage.setItem(throttleKey, Date.now());
-    return false;
 }
 
 function GetSoundEffectFileName(soundEffectName) {
