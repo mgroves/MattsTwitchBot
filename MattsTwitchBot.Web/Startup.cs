@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Net;
 using System.Reflection;
 using Couchbase.Extensions.DependencyInjection;
 using MattsTwitchBot.Core;
+using MattsTwitchBot.Web.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,12 +38,7 @@ namespace MattsTwitchBot.Web
             });
 
             services
-                .AddCouchbase(x =>
-                {
-                    x.Username = "Administrator";
-                    x.Password = "password";
-                    x.Servers = new List<Uri> {new Uri("http://localhost:8091")};
-                })
+                .AddCouchbase(Configuration.GetSection("Couchbase"))
                 .AddCouchbaseBucket<ITwitchBucketProvider>("twitchchat");
 
             services.AddMediatR(Assembly.GetAssembly(typeof(MattsChatBotHostedService)));
@@ -83,7 +78,16 @@ namespace MattsTwitchBot.Web
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            // ********
+            // if a request is coming from the same subnet, don't force into HTTPS
+            // the reason for this is ONLY for the NotifyTwitchBot.couchbase.eventing.js
+            // until I can figure out why HTTPS between images is not working
+            app.UseWhen(httpContext =>
+                    !httpContext.Connection.RemoteIpAddress.IsInSameSubnet(httpContext.Connection.LocalIpAddress,
+                        IPAddress.Parse("255.255.255.0").MapToIPv6()),
+                httpApp => httpApp.UseHttpsRedirection());
+            // ********
+
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
