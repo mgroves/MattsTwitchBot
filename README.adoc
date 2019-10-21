@@ -1,13 +1,49 @@
 = Matt's Twitch Bot
 
-== Config/setting up
+This is the Twitch bot I use for https://twitch.tv/matthewdgroves. It's a tool for making the channel more useful and enjoyable, but it's also a tool for me to link:https://en.wikipedia.org/wiki/Eating_your_own_dog_food[dogfood] Couchbase Server (as well as ASP.NET/C# stuff).
 
-Config.cs
+Here's a breakdown of each project
 
-== Build
+=== MattsTwitchBot.Core.
 
-== Executing
+This project has a class `MattsChatBotHostedService`. This implements IHostedService, which means it's designed to be run as a hosted service in an ASP.NET Core project. However, MattsTwitchBot.Core is not, itself, an ASP.NET Core project.
 
-== Using
+`MattsChatBotHostedService` uses the link:https://github.com/TwitchLib/TwitchLib.Api[TwitchLib API] to listen for incoming messages. A message will instantiate some Request object, which will then be given to link:https://github.com/jbogard/MediatR[Mediatr] to handle.
 
-Instructions for web page in OBS
+What you need to know to get it to work: I currently hard-code the Twitch configuration settings that you need to get this hosted service to talk to YOUR twitch channel inside `Config.cs`. This probably needs to change, but basically you'll need to put your bot's Username, OauthKey as well as your Twitch ApiClientId and ApiClientSecret in that file. I use my own Twitch user account as the bot, but it should still work fine if you are using a separate bot account.
+
+=== MattsTwitchBot.Web
+
+This is an ASP.NET Core 3.0 project. It does up to three things:
+
+* Start and host the `MattsChatBotHostedService` service from the Core library.
+* Provide a home page that will receive messages from a SignalR hub. This home page can be used from within your OBS setup. However, it currently only plays sound effects, so you can just open it directly in Chrome if you'd like (which is what I do for now).
+* (Experimental) Receive notifications about documents being updated in Couchbase to the Couchbase Notify endpoint. This currently doesn't do anything, it's experimental, but it's part of my dogfooding goals.
+
+=== MattsTwitchBot.Tests
+
+These are unit tests (and supporting fakes). Currently only testing the various handlers.
+
+=== docker-compose
+
+You don't have to use docker-compose. But if you do, it will run the ASP.NET Core application AND a Couchbase cluster inside of docker automatically.
+
+== Getting set up
+
+=== Config.cs
+
+Put your various Twitch tokens in here.
+
+=== Couchbase
+
+Currently you still need to do *some* manual setup of the Couchbase node. You will need to setup the cluster (you only need the data service at this point, but you should probably add query/index, and you will need eventing for the experimental stuff).
+
+Create a bucket called "twitchchat" (or change the name in Startup.cs if you want something different).
+
+In docker-compose.yml, I've specified that the Couchbase data should be saved to a volume called "couchbasetwitchbot". Feel free to change that name. If you aren't using docker-compose, then ignore.
+
+=== Startup.cs
+
+Create a bucket in Couchbase called "twitchchat" (or change the name in Startup.cs if you want something different).
+
+Also notice the `app.UseWhen` statement. This is part of the experimental eventing stuff. Feel free to remove that if you aren't doing that.
