@@ -1,0 +1,20 @@
+﻿For sound effects, there must be a document with a key of "validSoundEffects" like this:
+
+{
+  "SoundEffects": [
+    {
+      "SoundEffectName": "!rimshot"
+    },
+    {
+      "SoundEffectName": "!badumtss"
+    },
+    {
+      "SoundEffectName": "!laugh"
+    },
+    {
+      "SoundEffectName": "!sadtrombone"
+    }
+  ]
+}
+
+Those should correspond to the files in hub.js

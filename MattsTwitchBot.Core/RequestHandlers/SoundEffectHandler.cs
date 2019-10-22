@@ -18,11 +18,8 @@ namespace MattsTwitchBot.Core.RequestHandlers
 
         public async Task<Unit> Handle(SoundEffect request, CancellationToken cancellationToken)
         {
-            // validate the sound effect (TODO: consider switch this to Enum?)
-            var validSoundEffects = new List<string> { "laugh", "rimshot", "sadtrombone" };
-            if (!validSoundEffects.Contains(request.SoundEffectName))
-                return default;
-
+            // this method assumes that the SoundEffect request is valid and won't do any more
+            // checks on the sound effect
             await _hub.Clients.All.SendAsync("SoundEffect", request.SoundEffectName, cancellationToken: cancellationToken);
             return default;
         }

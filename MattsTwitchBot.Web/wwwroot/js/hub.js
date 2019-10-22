@@ -21,7 +21,7 @@ function GetSoundEffectFileName(soundEffectName) {
     if (soundEffectName === "laugh") {
         return "media/laugh.mp3"; // https://freesound.org/people/FunWithSound/sounds/381374/
     }
-    if (soundEffectName === "rimshot") {
+    if (soundEffectName === "rimshot" || soundEffectName == "badumtss") {
         return "media/rimshot.wav"; // https://freesound.org/people/xtrgamr/sounds/432972/
     }
     if (soundEffectName === "sadtrombone") {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core;
@@ -9,7 +8,7 @@ using Microsoft.AspNetCore.SignalR;
 using Moq;
 using NUnit.Framework;
 
-namespace MattsTwitchBot.Tests.RequestHandlerTests
+namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
     public class SoundEffectHandlerTests
@@ -28,20 +27,6 @@ namespace MattsTwitchBot.Tests.RequestHandlerTests
             _mockHub = new Mock<IHubContext<TwitchHub>>();
             _mockHub.Setup(x => x.Clients).Returns(_mockHubClients.Object);
             _handler = new SoundEffectHandler(_mockHub.Object);
-        }
-
-        [Test]
-        public async Task If_a_sound_effect_name_isnt_valid_dont_call_signalr()
-        {
-            // arrange
-            var invalidSoundEffectName = "sound-effect-" + Guid.NewGuid();
-            var request = new SoundEffect(invalidSoundEffectName);
-
-            // act
-            await _handler.Handle(request, CancellationToken.None);
-
-            // assert
-            _mockHub.Verify(x => x.Clients, Times.Never);
         }
 
         // https://buildingsteps.wordpress.com/2018/06/12/testing-signalr-hubs-in-asp-net-core-2-1/

@@ -43,6 +43,7 @@ namespace MattsTwitchBot.Web
 
             services.AddMediatR(Assembly.GetAssembly(typeof(MattsChatBotHostedService)));
 
+            services.AddTransient<TwitchCommandRequestFactory>();
             services.AddSingleton<IHostedService, MattsChatBotHostedService>();
             services.AddSingleton<ITwitchClient>(x =>
             {

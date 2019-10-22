@@ -13,7 +13,7 @@ using NUnit.Framework;
 using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models.Builders;
 
-namespace MattsTwitchBot.Tests.RequestHandlerTests
+namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
     public class SetCurrentProjectHandlerTests
