@@ -330,3 +330,4 @@ ASALocalRun/
 .mfractor/
 Config.Private.cs
 /couchbasetwitchbot
+/MattsTwitchBot.Web/appsettings.Release.json

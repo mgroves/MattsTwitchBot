@@ -8,6 +8,7 @@ using MattsTwitchBot.Core.Models;
 using MattsTwitchBot.Core.RequestHandlers;
 using MattsTwitchBot.Core.Requests;
 using MattsTwitchBot.Tests.Fakes;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using TwitchLib.Client.Interfaces;
@@ -22,6 +23,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         private Mock<ITwitchClient> _mockTwitchClient;
         private Mock<ITwitchBucketProvider> _mockBucketProvider;
         private Mock<IBucket> _mockBucket;
+        private Mock<IOptions<TwitchOptions>> _mockOptions;
 
         [SetUp]
         public void Setup()
@@ -30,14 +32,19 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             _mockBucketProvider = new Mock<ITwitchBucketProvider>();
             _mockBucketProvider.Setup(x => x.GetBucket()).Returns(_mockBucket.Object);
             _mockTwitchClient = new Mock<ITwitchClient>();
-            _handler = new SetCurrentProjectHandler(_mockTwitchClient.Object, _mockBucketProvider.Object);
+            _mockOptions = new Mock<IOptions<TwitchOptions>>();
+            _handler = new SetCurrentProjectHandler(_mockTwitchClient.Object, _mockBucketProvider.Object, _mockOptions.Object);
+            _mockOptions.Setup(x => x.Value).Returns(new TwitchOptions
+            {
+                Username = "someusername"
+            });
         }
 
         [Test]
         public async Task Only_the_bot_user_itself_can_set_the_current_project()
         {
             // arrange
-            var notTheBotUser = Config.Username + Guid.NewGuid();
+            var notTheBotUser = _mockOptions.Object.Value.Username + Guid.NewGuid();
             var twitchLibMessage = TwitchLibMessageBuilder.Create()
                 .WithUsername(notTheBotUser)
                 .Build();
@@ -67,7 +74,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         {
             // arrange
             var twitchLibMessage = TwitchLibMessageBuilder.Create()
-                .WithUsername(Config.Username)
+                .WithUsername(_mockOptions.Object.Value.Username)
                 .Build();
             var chatMessage = ChatMessageBuilder.Create()
                 .WithTwitchLibMessage(twitchLibMessage)
@@ -87,7 +94,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         {
             // arrange
             var twitchLibMessage = TwitchLibMessageBuilder.Create()
-                .WithUsername(Config.Username)
+                .WithUsername(_mockOptions.Object.Value.Username)
                 .Build();
             var chatMessage = ChatMessageBuilder.Create()
                 .WithTwitchLibMessage(twitchLibMessage)
@@ -112,7 +119,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         {
             // arrange
             var twitchLibMessage = TwitchLibMessageBuilder.Create()
-                .WithUsername(Config.Username)
+                .WithUsername(_mockOptions.Object.Value.Username)
                 .Build();
             var chatMessage = ChatMessageBuilder.Create()
                 .WithTwitchLibMessage(twitchLibMessage)

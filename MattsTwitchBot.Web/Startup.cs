@@ -37,6 +37,8 @@ namespace MattsTwitchBot.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<TwitchOptions>(Configuration.GetSection("Twitch"));
+
             services
                 .AddCouchbase(Configuration.GetSection("Couchbase"))
                 .AddCouchbaseBucket<ITwitchBucketProvider>("twitchchat");
@@ -47,16 +49,20 @@ namespace MattsTwitchBot.Web
             services.AddSingleton<IHostedService, MattsChatBotHostedService>();
             services.AddSingleton<ITwitchClient>(x =>
             {
-                var credentials = new ConnectionCredentials(Config.Username, Config.OauthKey);
+                var userName = Configuration.GetValue<string>("Twitch:Username");
+                var oauthKey = Configuration.GetValue<string>("Twitch:OauthKey");
+                var credentials = new ConnectionCredentials(userName, oauthKey);
                 var twitchClient = new TwitchClient();
                 twitchClient.Initialize(credentials, "matthewdgroves");
                 return twitchClient;
             });
             services.AddSingleton<ITwitchApiWrapper>(x =>
             {
+                var apiClientId = Configuration.GetValue<string>("Twitch:ApiClientId");
+                var apiClientSecret = Configuration.GetValue<string>("Twitch:ApiClientSecret");
                 var api = new TwitchAPI();
-                api.Settings.ClientId = Config.ApiClientId;
-                api.Settings.AccessToken = Config.ApiClientSecret;
+                api.Settings.ClientId = apiClientId;
+                api.Settings.AccessToken = apiClientSecret;
                 return new TwitchApiWrapper(api);
             });
 

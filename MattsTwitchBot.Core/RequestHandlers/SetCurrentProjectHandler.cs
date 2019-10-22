@@ -5,6 +5,7 @@ using Couchbase.Core;
 using MattsTwitchBot.Core.Models;
 using MattsTwitchBot.Core.Requests;
 using MediatR;
+using Microsoft.Extensions.Options;
 using TwitchLib.Client.Interfaces;
 
 namespace MattsTwitchBot.Core.RequestHandlers
@@ -12,11 +13,13 @@ namespace MattsTwitchBot.Core.RequestHandlers
     public class SetCurrentProjectHandler : IRequestHandler<SetCurrentProject>
     {
         private readonly ITwitchClient _twitchClient;
+        private readonly IOptions<TwitchOptions> _twitchOptions;
         private readonly IBucket _bucket;
 
-        public SetCurrentProjectHandler(ITwitchClient twitchClient, ITwitchBucketProvider twitchBucketProvider)
+        public SetCurrentProjectHandler(ITwitchClient twitchClient, ITwitchBucketProvider twitchBucketProvider, IOptions<TwitchOptions> twitchOptions)
         {
             _twitchClient = twitchClient;
+            _twitchOptions = twitchOptions;
             _bucket = twitchBucketProvider.GetBucket();
         }
 
@@ -25,7 +28,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
             var message = request.Message;
 
             // authorization - maybe this should be a separate object or an attribute or something
-            if (message.Username != Config.Username)
+            if (message.Username != _twitchOptions.Value.Username)
                 return Unit.Value;
 
             // parse out the url from the message and make sure it's valid
