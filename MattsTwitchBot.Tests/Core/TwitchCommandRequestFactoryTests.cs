@@ -32,6 +32,9 @@ namespace MattsTwitchBot.Tests.Core
             // setup a soundeffect to be a valid sound effect
             _mockMediator.Setup(x => x.Send<ValidSoundEffects>(It.IsAny<SoundEffectLookup>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new ValidSoundEffects { SoundEffects = new List<SoundEffectInfo> { new SoundEffectInfo { SoundEffectName = "!soundeffect" } }});
+            // setup a content command to be a valid content command
+            _mockMediator.Setup(x => x.Send<ValidStaticCommands>(It.IsAny<StaticCommandsLookup>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ValidStaticCommands { Commands = new List<StaticCommandInfo> { new StaticCommandInfo { Command = "staticcommand", Content = "bar"}}});
         }
 
         [TestCase("!help",typeof(Help))]
@@ -44,6 +47,7 @@ namespace MattsTwitchBot.Tests.Core
         [TestCase("!profile", typeof(ModifyProfile))]
         [TestCase("anything else", typeof(StoreMessage))]
         [TestCase("!soundeffect", typeof(SoundEffect))]
+        [TestCase("!staticcommand", typeof(StaticMessage))]
         public async Task Commands_returns_the_correct_requests(string command, Type type)
         {
             // arrange

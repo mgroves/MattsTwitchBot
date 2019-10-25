@@ -9,7 +9,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
 {
     public class SoundEffectLookupHandler : IRequestHandler<SoundEffectLookup, ValidSoundEffects>
     {
-        private IBucket _bucket;
+        private readonly IBucket _bucket;
 
         public SoundEffectLookupHandler(ITwitchBucketProvider bucketProvider)
         {

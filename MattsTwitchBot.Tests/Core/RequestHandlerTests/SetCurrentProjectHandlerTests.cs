@@ -65,7 +65,6 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
                 Times.Never);
         }
 
-        [TestCase(null, false)]
         [TestCase("!setcurrentproject")]
         [TestCase("!setcurrentproject ")]
         [TestCase("!setcurrentproject invalid url")]

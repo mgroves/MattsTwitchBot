@@ -18,7 +18,12 @@ namespace MattsTwitchBot.Core
 
         public async Task<IRequest> BuildCommand(ChatMessage chatMessage)
         {
+            // check for "!" right away, if no "!" then just go
+            // directly to StoreMessage
             var messageText = chatMessage.Message;
+            if(!messageText.StartsWith("!"))
+                return new StoreMessage(chatMessage);
+
             switch (messageText)
             {
                 case var x when x.StartsWith("!help"):
@@ -33,13 +38,26 @@ namespace MattsTwitchBot.Core
                     return new ModifyProfile(chatMessage);
                 case var x when await IsASoundEffect(x):
                     return new SoundEffect(x.Replace("!", ""));
+                case var x when await IsStaticCommand(x):
+                    return new StaticMessage(x.Replace("!", ""), chatMessage.Channel);
                 default:
                     return new StoreMessage(chatMessage);
             }
         }
 
+        private async Task<bool> IsStaticCommand(string commandText)
+        {
+            if (!commandText.StartsWith("!"))
+                return false;
+            var commandName = commandText.Replace("!", "");
+            var validStaticCommands = await _mediator.Send<ValidStaticCommands>(new StaticCommandsLookup());
+            return validStaticCommands.IsValid(commandName);
+        }
+
         private async Task<bool> IsASoundEffect(string commandText)
         {
+            if (!commandText.StartsWith("!"))
+                return false;
             var validSoundEffects = await _mediator.Send<ValidSoundEffects>(new SoundEffectLookup());
             return validSoundEffects.IsValid(commandText);
         }
