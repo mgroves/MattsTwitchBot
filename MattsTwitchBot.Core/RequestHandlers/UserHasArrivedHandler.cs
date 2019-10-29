@@ -57,7 +57,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
                 Content = new {
                     Message = $"{username} arrived: " + DateTime.Now
                 },
-                Expiry = 1000 // 12 * 60 * 60 * 1000 // 12 hours
+                Expiry = 12 * 60 * 60 * 1000 // 12 hours
             };
             await _bucket.UpsertAsync(doc);
         }
