@@ -2,9 +2,31 @@
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/twitchHub").build();
 
-connection.on("SoundEffect", HandleSoundEffect);
+connection.on("ReceiveSoundEffect", HandleSoundEffect);
+connection.on("ReceiveFanfare", HandleFanfare);
+
+function HandleFanfare(userName) {
+    var video = document.getElementById("ytvideo");
+    var fanfareInfo = GetFanfareInfo(userName);
+    if (fanfareInfo) {
+        video.src = fanfareInfo.url;
+        setTimeout(function () {
+            video.src = "";
+        }, fanfareInfo.timeout);
+    }
+    var myNotus = notus();
+    myNotus.send({
+        notusType: 'toast',
+        notusPosition: 'bottom',
+        title: 'HYPE HYPE HYPE',
+        autoCloseDuration: fanfareInfo.timeout,
+        message: 'Welcome to the channel, ' + userName + "!",
+        animationType: 'slide'
+    });
+}
 
 function HandleSoundEffect(soundEffectName) {
+    console.log("HandleSoundEffect");
     var throttle = new ThrottleChecker(localStorage);
 
     var filename = GetSoundEffectFileName(soundEffectName);
@@ -17,11 +39,28 @@ function HandleSoundEffect(soundEffectName) {
     }
 }
 
+function GetFanfareInfo(userName) {
+    if (userName === "calvinaallen") {
+        return {
+            timeout: 5000,
+            url: "https://www.youtube.com/embed/NkVQnZ3xndI?controls=0&start=217&autoplay=1&end=220&modestbranding=1"
+        };
+    }
+    if (userName === "matthewdgroves") {
+        return {
+            timeout: 16000,
+            url: "https://www.youtube.com/embed/DGsBRImD0po?controls=0&start=94&autoplay=1&end=109&modestbranding=1"
+        };
+    }
+
+    return {};
+}
+
 function GetSoundEffectFileName(soundEffectName) {
     if (soundEffectName === "laugh") {
         return "media/laugh.mp3"; // https://freesound.org/people/FunWithSound/sounds/381374/
     }
-    if (soundEffectName === "rimshot" || soundEffectName == "badumtss") {
+    if (soundEffectName === "rimshot" || soundEffectName === "badumtss") {
         return "media/rimshot.wav"; // https://freesound.org/people/xtrgamr/sounds/432972/
     }
     if (soundEffectName === "sadtrombone") {

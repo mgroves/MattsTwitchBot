@@ -9,6 +9,15 @@
         "dist/browser/signalr.js",
         "dist/browser/signalr.min.js"
       ]
+    },
+    {
+      "library": "notus@0.3.2",
+      "destination": "wwwroot/lib/notus/",
+      "files": [
+        "src/notus.css",
+        "src/notus.js",
+        "src/animate.css"
+      ]
     }
   ]
 }

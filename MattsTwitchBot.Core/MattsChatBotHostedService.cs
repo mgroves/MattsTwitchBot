@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using MattsTwitchBot.Core.Requests;
 using MediatR;
 using Microsoft.Extensions.Hosting;
 using TwitchLib.Client.Events;
@@ -30,6 +31,10 @@ namespace MattsTwitchBot.Core
 
         private async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
         {
+            // check to see if a user has "arrived" for the first time
+            // and welcome them if applicable
+            await _mediator.Send(new UserHasArrived(e.ChatMessage));
+
             var req = await _commandFactory.BuildCommand(e.ChatMessage);
             await _mediator.Send(req);
         }

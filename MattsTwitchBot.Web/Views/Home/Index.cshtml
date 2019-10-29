@@ -3,5 +3,24 @@
     Layout = null;
 }
 
-<script src="~/lib/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/hub.js" type="module"></script>
+<html>
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/toaster-js/default.css" />
+    <link rel="stylesheet" href="~/lib/notus/src/notus.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="~/lib/notus/src/animate.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="~/css/site.css" media="screen" charset="urf-8" />
+</head>
+<body>
+
+    <iframe id="ytvideo" width="560" height="315"
+            src=""
+            frameborder="0"
+            allow="autoplay;"
+            allowfullscreen></iframe>
+
+    <script src="~/lib/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/hub.js" type="module"></script>
+    <script src="~/lib/notus/src/notus.js" type="text/javascript"></script>
+</body>
+</html>
+

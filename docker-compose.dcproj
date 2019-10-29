@@ -3,7 +3,7 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>a1f85d9f-3398-4eb2-97e0-2c757aff54a5</ProjectGuid>
+    <ProjectGuid>f7d69d90-4a64-49de-9171-1530e66c8791</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
     <DockerServiceName>mattstwitchbot.web</DockerServiceName>

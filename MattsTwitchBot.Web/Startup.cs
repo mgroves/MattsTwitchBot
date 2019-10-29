@@ -102,7 +102,7 @@ namespace MattsTwitchBot.Web
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<TwitchHub>("/twitchHub");
+                endpoints.MapHub<ChatWebPageHub>("/twitchHub");
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

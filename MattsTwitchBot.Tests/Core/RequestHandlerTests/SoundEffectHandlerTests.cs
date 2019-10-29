@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.RequestHandlers;
@@ -14,22 +13,21 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
     public class SoundEffectHandlerTests
     {
         private SoundEffectHandler _handler;
-        private Mock<IHubContext<TwitchHub>> _mockHub;
-        private Mock<IHubClients> _mockHubClients;
-        private Mock<IClientProxy> _mockClientProxy;
+        private Mock<IHubContext<ChatWebPageHub, IChatWebPageHub>> _mockHub;
+        private Mock<IHubClients<IChatWebPageHub>> _mockHubClients;
+        private Mock<IChatWebPageHub> _mockTwitchHub;
 
         [SetUp]
         public void Setup()
         {
-            _mockClientProxy = new Mock<IClientProxy>();
-            _mockHubClients = new Mock<IHubClients>();
-            _mockHubClients.Setup(x => x.All).Returns(_mockClientProxy.Object);
-            _mockHub = new Mock<IHubContext<TwitchHub>>();
+            _mockTwitchHub = new Mock<IChatWebPageHub>();
+            _mockHubClients = new Mock<IHubClients<IChatWebPageHub>>();
+            _mockHubClients.Setup(x => x.All).Returns(_mockTwitchHub.Object);
+            _mockHub = new Mock<IHubContext<ChatWebPageHub, IChatWebPageHub>>();
             _mockHub.Setup(x => x.Clients).Returns(_mockHubClients.Object);
             _handler = new SoundEffectHandler(_mockHub.Object);
         }
 
-        // https://buildingsteps.wordpress.com/2018/06/12/testing-signalr-hubs-in-asp-net-core-2-1/
         [Test]
         public async Task Given_valid_sound_effect_tell_signalr()
         {
@@ -41,11 +39,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockHub.Verify(x => x.Clients, Times.Once);
-            _mockClientProxy.Verify(x => x.SendCoreAsync("SoundEffect", 
-                It.Is<object[]>(o => o != null && o.Any(p => (string)p == validSoundEffectName)),
-                CancellationToken.None),
-                Times.Once);
+            _mockTwitchHub.Verify(x => x.ReceiveSoundEffect(validSoundEffectName), Times.Once());
         }
     }
 }

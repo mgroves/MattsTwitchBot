@@ -1,0 +1,378 @@
+/**
+ * notus v0.3.1
+ *
+ * Author: Kushal Pandya <kushalspandya@gmail.com> (https://doublslash.com)
+ * Date: 12 February, 2016
+ *
+ * Main Notus Stylesheet.
+ */
+
+/*---------------- Supported Animations ----------------*/
+
+@keyframes slide-in-right {
+    0% {
+        transform: translateX(110%);
+    }
+}
+
+@keyframes slide-in-left {
+    0% {
+        transform: translateX(-110%);
+    }
+}
+
+@keyframes slide-in-top {
+    0% {
+        transform: translateY(-110%);
+    }
+}
+
+@keyframes slide-in-bottom {
+    0% {
+        transform: translateY(110%);
+    }
+}
+
+@keyframes slide-out-lr {
+    0% {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes slide-out-tb {
+    0% {
+        transform: translateY(0%);
+    }
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+}
+
+/*---------------- Container Styles ----------------*/
+
+.notus-container {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999999;
+}
+
+.notus-container.notus-position-tr,
+.notus-container.notus-position-tl,
+.notus-container.notus-position-top {
+    top: 0;
+}
+
+.notus-container.notus-position-br,
+.notus-container.notus-position-tr {
+    right: 0;
+}
+
+.notus-container.notus-position-bl,
+.notus-container.notus-position-tl {
+    left: 0;
+}
+
+.notus-container.notus-position-br,
+.notus-container.notus-position-bl,
+.notus-container.notus-position-bottom {
+    bottom: 0;
+}
+
+.notus-container.notus-position-top,
+.notus-container.notus-position-bottom {
+    display: block;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.notus-container.notus-container-snackbar {
+    width: 100%;
+}
+
+.notus-container.notus-position-bl .notus,
+.notus-container.notus-position-tl .notus {
+    margin-left: 10px;
+}
+
+.notus-container.notus-position-br .notus,
+.notus-container.notus-position-tr .notus {
+    margin-right: 10px;
+}
+
+.notus-position-top .notus,
+.notus-position-bottom .notus {
+    width: 200px;
+}
+
+.notus-position-top .notus.notus-type-snackbar,
+.notus-position-bottom .notus.notus-type-snackbar {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.notus-position-top .notus.notus-type-snackbar {
+    margin-bottom: 10px;
+}
+
+.notus-position-bottom .notus.notus-type-snackbar {
+    margin-top: 10px;
+}
+
+/*---------------- Built-in Animation Config ----------------*/
+
+/* Common Animation Config */
+.notus-type-popup.notus-slide,
+.notus-type-toast.notus-slide,
+.notus-type-snackbar.notus-slide {
+    animation-duration:  .2s;
+    animation-timing-function: ease-out;
+}
+
+/* Slide-in for Popup */
+.notus-position-tr .notus-type-popup.notus-slide.notus-slide-in,
+.notus-position-br .notus-type-popup.notus-slide.notus-slide-in {
+    animation-name: slide-in-right;
+}
+
+.notus-position-tl .notus-type-popup.notus-slide.notus-slide-in,
+.notus-position-bl .notus-type-popup.notus-slide.notus-slide-in {
+    animation-name: slide-in-left;
+}
+
+/* Slide-in for Toast / Snackbar */
+.notus-position-top .notus-type-toast.notus-slide.notus-slide-in,
+.notus-position-top .notus-type-snackbar.notus-slide.notus-slide-in {
+    animation-name: slide-in-top;
+}
+
+.notus-position-bottom .notus-type-toast.notus-slide.notus-slide-in,
+.notus-position-bottom .notus-type-snackbar.notus-slide.notus-slide-in {
+    animation-name: slide-in-bottom;
+}
+
+/* Fade-in for Popup / Toast / Snackbar */
+.notus.notus-fade {
+    animation-duration:  .4s;
+    animation-timing-function: ease-out;
+}
+
+.notus.notus-fade.notus-fade-in {
+    animation-name: fade-in;
+}
+
+/* Slide-out for Popup */
+.notus-type-popup.notus-slide.notus-slide-out {
+    animation-name: slide-out-lr;
+}
+
+.notus-type-toast.notus-slide.notus-slide-out,
+.notus-type-snackbar.notus-slide.notus-slide-out {
+    animation-name: slide-out-tb;
+}
+
+/* Fade-out for Popup / Toast / Snackbar */
+.notus.notus-fade.notus-fade-out {
+    animation-name: fade-out;
+}
+
+/*---------------- Notification Card Styles ----------------*/
+
+.notus {
+    position: relative;
+    box-sizing: border-box;
+    margin: 10px auto;
+    padding: 8px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),
+                0 3px 1px -2px rgba(0,0,0,.2),
+                0 1px 5px 0 rgba(0,0,0,.12);
+
+    border-radius: 2px;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    font-size: 16px;
+    pointer-events: all;
+}
+
+.notus .notus-close {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    padding: 3px 4px;
+    font-size: 2rem;
+    line-height: 15px;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+}
+
+.notus .notus-actions {
+    font-size: 1.4rem;
+}
+
+.notus .notus-close,
+.notus .notus-actions {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.notus .notus-content-body {
+    font-size: 1.3rem;
+}
+
+.notus:not(.notus-type-snackbar) {
+    width: 300px;
+    min-height: 100px;
+}
+
+.notus:not(.notus-type-snackbar) .notus-content {
+    max-width: 95%;
+}
+
+.notus:not(.notus-type-snackbar) .notus-content-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.notus:not(.notus-type-snackbar) .notus-content-body {
+    margin-top: 5px;
+}
+
+.notus:not(.notus-type-snackbar) .notus-close {
+    top: 0;
+    right: 0;
+}
+
+.notus:not(.notus-type-snackbar) .notus-actions {
+    margin-top: 3px;
+    padding-top: 3px;
+    font-size: 1.2rem;
+    border-top: 1px solid #E0E0E0;
+}
+
+.notus:not(.notus-type-snackbar) .notus-actions .action-item {
+    display: block;
+    padding: 6px 4px;
+}
+
+/** Styles for Snackbar **/
+
+.notus-position-bottom .notus.notus-type-snackbar {
+    box-shadow: 0 -2px 2px 0 rgba(0,0,0,.14),
+                0 -3px 1px -2px rgba(0,0,0,.2),
+                0 -1px 5px 0 rgba(0,0,0,.12);
+}
+
+.notus.notus-type-snackbar:after {
+    content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.notus.notus-type-snackbar .notus-close {
+    left: 5px;
+}
+
+.notus.notus-type-snackbar .notus-content {
+    float: left;
+    width: 85%;
+    margin-left: 25px;
+}
+
+.notus.notus-type-snackbar .notus-content .notus-content-body {
+    line-height: 2.1rem;
+}
+
+.notus.notus-type-snackbar .notus-actions {
+    float: right;
+    padding: 0 3px;
+}
+
+.notus.notus-type-snackbar .notus-actions .action-item {
+    padding: 3px 4px;
+}
+
+.notus.notus-type-snackbar .notus-actions .action-item.action-secondary {
+    margin-left: 10px;
+}
+
+/*---------------- Material Light Theme ----------------*/
+
+.notus.notus-material-light .notus-content .notus-content-title,
+.notus.notus-type-snackbar.notus-material-light .notus-content .notus-content-body {
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.notus.notus-material-light .notus-close .icon-close,
+.notus.notus-type-snackbar.notus-material-light .notus-action,
+.notus.notus-material-light .notus-content .notus-content-body {
+    color: rgba(0, 0, 0, 0.54);
+}
+
+.notus.notus-material-light {
+    background-color: #F5F5F5;
+    border: 1px solid #EEEEEE;
+}
+
+.notus.notus-material-light .notus-actions {
+    border-color: #E0E0E0;
+}
+
+.notus.notus-material-light .notus-close:hover,
+.notus.notus-material-light .notus-actions .action-item:hover {
+    background-color: #E0E0E0;
+}
+
+.notus.notus-material-light.notus-alert-success {
+    background-color: #E8F5E9;
+    border-color: #C8E6C9;
+}
+
+.notus.notus-material-light.notus-alert-success .notus-actions {
+    border-color: #C8E6C9;
+}
+
+.notus.notus-material-light.notus-alert-success .notus-close:hover,
+.notus.notus-material-light.notus-alert-success .notus-actions .action-item:hover {
+    background-color: #C8E6C9;
+}
+
+.notus.notus-material-light.notus-alert-failure {
+    background-color: #FFEBEE;
+    border-color: #FFCDD2;
+}
+
+.notus.notus-material-light.notus-alert-failure .notus-actions {
+    border-color: #FFCDD2;
+}
+
+.notus.notus-material-light.notus-alert-failure .notus-close:hover,
+.notus.notus-material-light.notus-alert-failure .notus-actions .action-item:hover {
+    background-color: #FFCDD2;
+}
+
+.notus.notus-material-light.notus-alert-warning {
+    background-color: #FFF3E0;
+    border-color: #FFE0B2;
+}
+
+.notus.notus-material-light.notus-alert-warning .notus-actions {
+    border-color: #FFE0B2;
+}
+
+.notus.notus-material-light.notus-alert-warning .notus-close:hover,
+.notus.notus-material-light.notus-alert-warning .notus-actions .action-item:hover {
+    background-color: #FFE0B2;
+}
