@@ -41,7 +41,7 @@ function HandleFanfare(userName) {
         notusPosition: 'bottom',
         title: 'HYPE HYPE HYPE',
         autoCloseDuration: fanfareInfo.timeout,
-        message: 'Welcome to the channel, ' + userName + "!",
+        message: fanfareInfo.message,
         animationType: 'slide'
     });
 }
@@ -61,16 +61,32 @@ function HandleSoundEffect(soundEffectName) {
 }
 
 function GetFanfareInfo(userName) {
-    if (userName === "calvinaallen") {
+    if (userName.toLowerCase() === "calvinaallen") {
         return {
-            timeout: 5000,
+            message: "Calvin!",
+            timeout: 6000,
             url: "https://www.youtube.com/embed/NkVQnZ3xndI?controls=0&start=217&autoplay=1&end=220&modestbranding=1"
         };
     }
-    if (userName === "matthewdgroves") {
+    if (userName.toLowerCase() === "matthewdgroves") {
         return {
+            message: "Time to break the walls down!",
             timeout: 16000,
             url: "https://www.youtube.com/embed/DGsBRImD0po?controls=0&start=94&autoplay=1&end=109&modestbranding=1"
+        };
+    }
+    if (userName.toLowerCase() === "tbdgamer") {
+        return {
+            message: "tbdgamer loves it when a plan comes together",
+            timeout: 11000,
+            url: "https://www.youtube.com/embed/ucLb7ZDv8e8?controls=0&start=32&autoplay=1&end=42&modestbranding=1"
+        };
+    }
+    if (userName.toLowerCase() === "correlr") {
+        return {
+            message: "CorrelR did not see you playing with your dolls again",
+            timeout: 15000,
+            url: "https://www.youtube.com/embed/eGoXyXiwOBg?controls=0&start=72&autoplay=1&end=83&modestbranding=1"
         };
     }
 
