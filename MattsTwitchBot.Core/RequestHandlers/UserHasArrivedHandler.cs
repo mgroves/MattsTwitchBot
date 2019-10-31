@@ -29,8 +29,11 @@ namespace MattsTwitchBot.Core.RequestHandlers
         {
             var hasUserArrivedRecently = await CheckIfUserHasArrivedRecently(request.Message.Username);
 
-            if (!hasUserArrivedRecently)
-                await CreateUserArrivedRecentlyData(request.Message.Username);
+            // if the user HAS been around recently, then bail out, no need to send fanfare
+            if (hasUserArrivedRecently)
+                return default;
+
+            await CreateUserArrivedRecentlyData(request.Message.Username);
 
             var profile = await GetUserProfile(request.Message.Username);
 

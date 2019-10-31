@@ -1,9 +1,30 @@
 ﻿import { ThrottleChecker } from './modules/ThrottleChecker.js';
 
-var connection = new signalR.HubConnectionBuilder().withUrl("/twitchHub").build();
+window.testFanfare = function (username) {
+    if (!username)
+        username = "matthewdgroves";
+    HandleFanfare(username)
+};
 
-connection.on("ReceiveSoundEffect", HandleSoundEffect);
-connection.on("ReceiveFanfare", HandleFanfare);
+window.onload = function () {
+    var connection = new signalR.HubConnectionBuilder().withUrl("/twitchHub").build();
+    connection.on("ReceiveSoundEffect", HandleSoundEffect);
+    connection.on("ReceiveFanfare", HandleFanfare);
+    connection.start().then(function () {
+        console.log("Hello, Twitch. My Chat Bot is ready!");
+        var myNotus = notus();
+        myNotus.send({
+            notusType: 'toast',
+            notusPosition: 'bottom',
+            title: 'Bot ready',
+            autoCloseDuration: 5000,
+            message: 'Hello, Twitch. My Chat Bot is ready!',
+            animationType: 'slide'
+        });
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+};
 
 function HandleFanfare(userName) {
     var video = document.getElementById("ytvideo");
@@ -68,9 +89,3 @@ function GetSoundEffectFileName(soundEffectName) {
     }
     return "";
 }
-
-connection.start().then(function () {
-    //
-}).catch(function (err) {
-    return console.error(err.toString());
-});
