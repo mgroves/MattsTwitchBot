@@ -1,0 +1,68 @@
+﻿@model MattsTwitchBot.Web.Models.ProfileEditorViewModel
+@{
+    ViewData["Title"] = Model.TwitchUsername + ":: Profile Editor";
+    Layout = null;
+}
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/notus/src/notus.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="~/lib/notus/src/animate.css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="~/css/site.css" media="screen" charset="urf-8" />
+</head>
+<body>
+
+<h2>Edit Profile: @Model.TwitchUsername</h2>
+
+@Html.ValidationSummary(false)
+
+@using (Html.BeginForm(FormMethod.Post))
+{
+    <div>
+        @Html.LabelFor(m=> m.ShoutMessage,"Shout Out (!so) message")
+        @Html.TextBoxFor(m => m.ShoutMessage)
+    </div>
+
+    <fieldset>
+        <legend>Fanfare</legend>
+        
+        <div>
+            @Html.CheckBoxFor(m => m.FanfareEnabled)
+            @Html.LabelFor(m => m.FanfareEnabled,"Enabled?")
+        </div>
+        
+        <div>
+            @Html.LabelFor(m=> m.FanfareMessage,"Fanfare message")
+            @Html.TextBoxFor(m => m.FanfareMessage)
+        </div>
+
+        <div>
+            @Html.LabelFor(m=> m.FanfareYouTubeCode,"YouTube Video Code")
+            @Html.TextBoxFor(m => m.FanfareYouTubeCode)
+        </div>
+
+        <div>
+            @Html.LabelFor(m => m.FanfareYouTubeStartTime,"YouTube Start Time (sec)")
+            @Html.TextBoxFor(m => m.FanfareYouTubeStartTime)
+        </div>
+
+        <div>
+            @Html.LabelFor(m => m.FanfareYouTubeEndTime,"YouTube End Time (sec)")
+            @Html.TextBoxFor(m => m.FanfareYouTubeEndTime)
+        </div>
+
+        <div>
+            @Html.LabelFor(m => m.FanfareTimeout,"Timeout (msec)")
+            @Html.TextBoxFor(m => m.FanfareTimeout)
+        </div>
+
+        <button>Fanfare Preview</button>
+    </fieldset>
+
+    <input type="submit" value="Save" />
+}
+
+<script src="~/lib/notus/src/notus.js" type="text/javascript"></script>
+
+</body>
+</html>

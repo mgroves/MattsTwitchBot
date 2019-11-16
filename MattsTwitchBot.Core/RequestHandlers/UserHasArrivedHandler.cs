@@ -37,8 +37,12 @@ namespace MattsTwitchBot.Core.RequestHandlers
 
             var profile = await GetUserProfile(request.Message.Username);
 
+            // if there is no profile, then there can be no fanfare
+            if (profile == null)
+                return default;
+
             // if they have fanfare, tell signalr hub
-            if (profile.HasFanfare)
+            if (profile.HasFanfare.HasValue && profile.HasFanfare.Value)
                 await _hub.Clients.All.ReceiveFanfare(request.Message.Username);
 
             return default;

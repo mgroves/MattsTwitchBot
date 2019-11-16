@@ -93,5 +93,29 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             // assert
             _mockTwitchHub.Verify(x => x.ReceiveFanfare(username), Times.Exactly(timesSent));
         }
+
+        [Test]
+        public async Task No_fanfare_if_there_is_no_user_profile()
+        {
+            // arrange
+            var username = "gamlor";
+            var twitchLibMessage = TwitchLibMessageBuilder.Create().WithUsername(username).Build();
+            var chatMessage = ChatMessageBuilder.Create().WithTwitchLibMessage(twitchLibMessage).Build();
+            var request = new UserHasArrived(chatMessage);
+            // setup: user has NOT arrive recently
+            _mockBucket.Setup(m => m.ExistsAsync($"{username}::arrived_recently"))
+                .ReturnsAsync(false);
+            // setup: don't care about the arrive_recently document being added
+            _mockBucket.Setup(m => m.UpsertAsync(It.IsAny<Document<dynamic>>()));
+            // setup: user does NOT have a profile
+            _mockBucket.Setup(m => m.GetAsync<TwitcherProfile>(username.ToLower()))
+                .ReturnsAsync(new FakeOperationResult<TwitcherProfile> {Value = null});
+
+            // act
+            await _handler.Handle(request, CancellationToken.None);
+
+            // assert
+            _mockTwitchHub.Verify(m => m.ReceiveFanfare(It.IsAny<string>()), Times.Never);
+        }
     }
 }

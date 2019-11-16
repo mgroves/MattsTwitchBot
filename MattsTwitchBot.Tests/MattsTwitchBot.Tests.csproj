@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MattsTwitchBot.Core\MattsTwitchBot.Core.csproj" />
+    <ProjectReference Include="..\MattsTwitchBot.Web\MattsTwitchBot.Web.csproj" />
   </ItemGroup>
 
 </Project>
