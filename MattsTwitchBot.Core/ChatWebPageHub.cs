@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
+using MattsTwitchBot.Core.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace MattsTwitchBot.Core
 {
     public class ChatWebPageHub : Hub<IChatWebPageHub>
     {
-        public async Task ReceiveFanfare(string username)
+        public async Task ReceiveFanfare(FanfareInfo fanfareInfo)
         {
-            await Clients.All.ReceiveFanfare(username);
+            await Clients.All.ReceiveFanfare(fanfareInfo);
         }
 
         public async Task ReceiveSoundEffect(string soundEffectName)
@@ -18,7 +19,7 @@ namespace MattsTwitchBot.Core
 
     public interface IChatWebPageHub
     {
-        Task ReceiveFanfare(string username);
+        Task ReceiveFanfare(FanfareInfo fanfareInfo);
         Task ReceiveSoundEffect(string soundEffectName);
     }
 }

@@ -17,7 +17,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
     public class UserHasArrivedHandler : IRequestHandler<UserHasArrived>
     {
         private readonly IBucket _bucket;
-        private IHubContext<ChatWebPageHub, IChatWebPageHub> _hub;
+        private readonly IHubContext<ChatWebPageHub, IChatWebPageHub> _hub;
 
         public UserHasArrivedHandler(ITwitchBucketProvider twitchBucketProvider, IHubContext<ChatWebPageHub, IChatWebPageHub> hub)
         {
@@ -43,7 +43,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
 
             // if they have fanfare, tell signalr hub
             if (profile.HasFanfare.HasValue && profile.HasFanfare.Value)
-                await _hub.Clients.All.ReceiveFanfare(request.Message.Username);
+                await _hub.Clients.All.ReceiveFanfare(profile.Fanfare);
 
             return default;
         }
@@ -69,7 +69,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
             await _bucket.UpsertAsync(doc);
         }
 
-        // check to see if user_arrived_recently document exists
+        // check to see if user arrived_recently document exists
         private async Task<bool> CheckIfUserHasArrivedRecently(string username)
         {
             return await _bucket.ExistsAsync($"{username}::arrived_recently");

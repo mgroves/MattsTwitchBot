@@ -1,9 +1,8 @@
 ﻿import { ThrottleChecker } from './modules/ThrottleChecker.js';
+import { FanfareHandler } from './modules/fanfare.js';
 
 window.testFanfare = function (username) {
-    if (!username)
-        username = "matthewdgroves";
-    HandleFanfare(username)
+    HandleFanfare({ "youTubeCode": "NkVQnZ3xndI", "timeout": "6000", "message": "Calvin!", "youTubeStartTime": "217", "youTubeEndTime": "220" });
 };
 
 window.onload = function () {
@@ -26,28 +25,13 @@ window.onload = function () {
     });
 };
 
-function HandleFanfare(userName) {
-    var video = document.getElementById("ytvideo");
-    var fanfareInfo = GetFanfareInfo(userName);
-    if (fanfareInfo) {
-        video.src = fanfareInfo.url;
-        setTimeout(function () {
-            video.src = "";
-        }, fanfareInfo.timeout);
-    }
-    var myNotus = notus();
-    myNotus.send({
-        notusType: 'toast',
-        notusPosition: 'bottom',
-        title: 'HYPE HYPE HYPE',
-        autoCloseDuration: fanfareInfo.timeout,
-        message: fanfareInfo.message,
-        animationType: 'slide'
-    });
+function HandleFanfare(fanfareInfo) {
+    console.log(fanfareInfo);
+    var fanfare = new FanfareHandler(document.getElementById("ytvideo"));
+    fanfare.HandleFanfare(fanfareInfo);
 }
 
 function HandleSoundEffect(soundEffectName) {
-    console.log("HandleSoundEffect");
     var throttle = new ThrottleChecker(localStorage);
 
     var filename = GetSoundEffectFileName(soundEffectName);
@@ -58,39 +42,6 @@ function HandleSoundEffect(soundEffectName) {
         var audio = new window.Audio(filename);    // https://stackoverflow.com/questions/9419263/playing-audio-with-javascript
         audio.play();
     }
-}
-
-function GetFanfareInfo(userName) {
-    if (userName.toLowerCase() === "calvinaallen") {
-        return {
-            message: "Calvin!",
-            timeout: 6000,
-            url: "https://www.youtube.com/embed/NkVQnZ3xndI?controls=0&start=217&autoplay=1&end=220&modestbranding=1"
-        };
-    }
-    if (userName.toLowerCase() === "matthewdgroves") {
-        return {
-            message: "Time to break the walls down!",
-            timeout: 16000,
-            url: "https://www.youtube.com/embed/DGsBRImD0po?controls=0&start=94&autoplay=1&end=109&modestbranding=1"
-        };
-    }
-    if (userName.toLowerCase() === "tbdgamer") {
-        return {
-            message: "tbdgamer loves it when a plan comes together",
-            timeout: 11000,
-            url: "https://www.youtube.com/embed/ucLb7ZDv8e8?controls=0&start=32&autoplay=1&end=42&modestbranding=1"
-        };
-    }
-    if (userName.toLowerCase() === "correlr") {
-        return {
-            message: "CorrelR did not see you playing with your dolls again",
-            timeout: 15000,
-            url: "https://www.youtube.com/embed/eGoXyXiwOBg?controls=0&start=72&autoplay=1&end=83&modestbranding=1"
-        };
-    }
-
-    return {};
 }
 
 function GetSoundEffectFileName(soundEffectName) {

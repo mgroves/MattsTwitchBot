@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using System;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using Couchbase;
@@ -11,7 +12,6 @@ using MattsTwitchBot.Tests.Fakes;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
 using NUnit.Framework;
-using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models.Builders;
 
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
@@ -57,7 +57,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             var request = new UserHasArrived(chatMessage);
             _mockBucket.Setup(x => x.GetAsync<TwitcherProfile>(It.IsAny<string>()))
                 .ReturnsAsync(new FakeOperationResult<TwitcherProfile> { Value = new TwitcherProfile() });
-            _mockTwitchHub.Setup(x => x.ReceiveFanfare(It.IsAny<string>()));
+            _mockTwitchHub.Setup(x => x.ReceiveFanfare(It.IsAny<FanfareInfo>()));
 
             // act
             await _handler.Handle(request, CancellationToken.None);
@@ -79,19 +79,28 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         {
             // arrange
             var username = "someusername";
+            var expectedFanfare = new FanfareInfo
+            {
+                Enabled = true,
+                Message = "message " + Guid.NewGuid(),
+                Timeout = 12312,
+                YouTubeCode = "ytcode" + Guid.NewGuid(),
+                YouTubeStartTime = 111,
+                YouTubeEndTime = 222
+            };
             var twitchLibMessage = TwitchLibMessageBuilder.Create().WithUsername(username).Build();
             var chatMessage = ChatMessageBuilder.Create().WithTwitchLibMessage(twitchLibMessage).Build();
             var request = new UserHasArrived(chatMessage);
             _mockBucket.Setup(x => x.ExistsAsync($"{username}::arrived_recently"))
                 .ReturnsAsync(false);
             _mockBucket.Setup(x => x.GetAsync<TwitcherProfile>(It.IsAny<string>()))
-                .ReturnsAsync(new FakeOperationResult<TwitcherProfile> { Value = new TwitcherProfile { HasFanfare = hasFanfare} });
+                .ReturnsAsync(new FakeOperationResult<TwitcherProfile> { Value = new TwitcherProfile { HasFanfare = hasFanfare, Fanfare = expectedFanfare} });
 
             // act
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockTwitchHub.Verify(x => x.ReceiveFanfare(username), Times.Exactly(timesSent));
+            _mockTwitchHub.Verify(x => x.ReceiveFanfare(expectedFanfare), Times.Exactly(timesSent));
         }
 
         [Test]
@@ -115,7 +124,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockTwitchHub.Verify(m => m.ReceiveFanfare(It.IsAny<string>()), Times.Never);
+            _mockTwitchHub.Verify(m => m.ReceiveFanfare(It.IsAny<FanfareInfo>()), Times.Never);
         }
     }
 }
