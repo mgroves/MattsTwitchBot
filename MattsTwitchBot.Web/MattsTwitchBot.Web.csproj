@@ -6,6 +6,7 @@
     <UserSecretsId>af068cdd-7e62-4ab9-84d8-4b2d1fd33b61</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
+    <ApplicationInsightsResourceId>/subscriptions/da497056-3a40-48b6-b3cf-1ecef4a68d2f/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/MattsTwitchBot.Web</ApplicationInsightsResourceId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Couchbase.Extensions.DependencyInjection" Version="2.0.2" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.12.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.10" />
   </ItemGroup>
@@ -34,6 +36,11 @@
 
   <ItemGroup>
     <None Include="wwwroot\js\tests\hubTests.js" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>

@@ -4,6 +4,7 @@ using Couchbase.Extensions.DependencyInjection;
 using MattsTwitchBot.Core;
 using MattsTwitchBot.Web.Extensions;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -37,6 +38,8 @@ namespace MattsTwitchBot.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddHttpContextAccessor();
+
             services.Configure<TwitchOptions>(Configuration.GetSection("Twitch"));
 
             services
@@ -69,6 +72,7 @@ namespace MattsTwitchBot.Web
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddSignalR();
+            services.AddApplicationInsightsTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,10 +93,10 @@ namespace MattsTwitchBot.Web
             // if a request is coming from the same subnet, don't force into HTTPS
             // the reason for this is ONLY for the NotifyTwitchBot.couchbase.eventing.js
             // until I can figure out why HTTPS between images is not working
-            app.UseWhen(httpContext =>
-                    !httpContext.Connection.RemoteIpAddress.IsInSameSubnet(httpContext.Connection.LocalIpAddress,
-                        IPAddress.Parse("255.255.255.0").MapToIPv6()),
-                httpApp => httpApp.UseHttpsRedirection());
+            // app.UseWhen(httpContext =>
+            //         !httpContext.Connection.RemoteIpAddress.IsInSameSubnet(httpContext.Connection.LocalIpAddress,
+            //             IPAddress.Parse("255.255.255.0").MapToIPv6()),
+            //     httpApp => httpApp.UseHttpsRedirection());
             // ********
 
             app.UseStaticFiles();

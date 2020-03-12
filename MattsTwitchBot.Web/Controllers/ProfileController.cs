@@ -17,6 +17,7 @@ namespace MattsTwitchBot.Web.Controllers
 
         [HttpGet]
         [Route("/profile/{twitchUsername}")]
+        [BearerToken]
         public async Task<IActionResult> ProfileEditor(string twitchUsername)
         {
             await _mediator.Send(new CreateProfileIfNotExists(twitchUsername));
@@ -31,6 +32,7 @@ namespace MattsTwitchBot.Web.Controllers
 
         [HttpPost]
         [Route("/profile/{twitchUsername}")]
+        [BearerToken]
         public async Task<IActionResult> ProfileEditorPost([FromRoute] string twitchUsername, [FromForm] ProfileEditorViewModel form)
         {
             form.Validate(ModelState);
