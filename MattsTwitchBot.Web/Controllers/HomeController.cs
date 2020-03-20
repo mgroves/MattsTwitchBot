@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MattsTwitchBot.Web.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MattsTwitchBot.Web.Controllers
 {

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Web.Filters;
 using MattsTwitchBot.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

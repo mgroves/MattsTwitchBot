@@ -10,7 +10,6 @@
 
     public class FanfareInfo
     {
-        public bool? Enabled { get; set; }
         public string YouTubeCode { get; set; }
         public int? YouTubeStartTime { get; set; }
         public int? YouTubeEndTime { get; set; }

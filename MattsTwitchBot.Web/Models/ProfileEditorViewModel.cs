@@ -35,9 +35,9 @@ namespace MattsTwitchBot.Web.Models
         {
             TwitchUsername = twitchUsername;
             ShoutMessage = twitcherProfile.ShoutMessage;
+            FanfareEnabled = twitcherProfile.HasFanfare ?? false;
             if (twitcherProfile.Fanfare != null)
             {
-                FanfareEnabled = twitcherProfile.Fanfare.Enabled ?? false;
                 FanfareMessage = twitcherProfile.Fanfare.Message;
                 FanfareTimeout = twitcherProfile.Fanfare.Timeout;
                 FanfareYouTubeCode = twitcherProfile.Fanfare.YouTubeCode;

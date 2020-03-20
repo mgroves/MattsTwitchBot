@@ -81,7 +81,6 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             var username = "someusername";
             var expectedFanfare = new FanfareInfo
             {
-                Enabled = true,
                 Message = "message " + Guid.NewGuid(),
                 Timeout = 12312,
                 YouTubeCode = "ytcode" + Guid.NewGuid(),

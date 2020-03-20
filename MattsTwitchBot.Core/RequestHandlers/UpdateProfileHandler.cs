@@ -18,25 +18,18 @@ namespace MattsTwitchBot.Core.RequestHandlers
 
         public async Task<Unit> Handle(UpdateProfile request, CancellationToken cancellationToken)
         {
-            var cmd = _bucket.MutateIn<TwitcherProfile>(request.TwitchUsername);
+            var profile = new TwitcherProfile();
+            profile.Fanfare = new FanfareInfo();
 
-            cmd = cmd.Upsert("fanfare.enabled", request.FanfareEnabled);
+            profile.ShoutMessage = request.ShoutMessage;
+            profile.HasFanfare = request.FanfareEnabled;
+            profile.Fanfare.Message = request.FanfareMessage;
+            profile.Fanfare.Timeout = request.FanfareTimeout;
+            profile.Fanfare.YouTubeStartTime = request.FanfareYouTubeStartTime;
+            profile.Fanfare.YouTubeEndTime = request.FanfareYouTubeEndTime;
+            profile.Fanfare.YouTubeCode = request.FanfareYouTubeCode;
 
-            if (!string.IsNullOrEmpty(request.ShoutMessage))
-                cmd = cmd.Upsert("shoutMessage", request.ShoutMessage);
-            if (!string.IsNullOrEmpty(request.FanfareMessage))
-                cmd = cmd.Upsert("fanfare.message", request.FanfareMessage);
-            if (request.FanfareTimeout.HasValue)
-                cmd = cmd.Upsert("fanfare.timeout", request.FanfareTimeout.Value);
-            if (request.FanfareYouTubeStartTime.HasValue)
-                cmd = cmd.Upsert("fanfare.youTubeStartTime", request.FanfareYouTubeStartTime.Value);
-            if (request.FanfareYouTubeEndTime.HasValue)
-                cmd = cmd.Upsert("fanfare.youTubeEndTime", request.FanfareYouTubeEndTime.Value);
-            if(!string.IsNullOrEmpty(request.FanfareYouTubeCode))
-                cmd = cmd.Upsert("fanfare.youTubeCode", request.FanfareYouTubeCode);
-
-            await cmd.ExecuteAsync();
-
+            await _bucket.UpsertAsync(request.TwitchUsername, profile);
             return default;
         }
     }
