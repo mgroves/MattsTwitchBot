@@ -22,4 +22,4 @@ jobs:
     - name: Build
       run: dotnet build MattsTwitchBot.Web --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test MattsTwitchBot.Tests --no-restore --verbosity normal
