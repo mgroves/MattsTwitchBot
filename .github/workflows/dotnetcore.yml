@@ -23,3 +23,10 @@ jobs:
       run: dotnet build MattsTwitchBot.Web --configuration Release --no-restore
     - name: Test
       run: dotnet test MattsTwitchBot.Tests --no-restore --verbosity normal
+    - name: Azure WebApp
+      uses: Azure/webapps-deploy@v2
+      with:
+        # Name of the Azure Web App
+        app-name: MattsTwitchBot
+        # Applies to Web App only: Publish profile (*.publishsettings) file contents with Web Deploy secrets
+        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
