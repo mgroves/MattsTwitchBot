@@ -11,7 +11,7 @@ window.onload = function () {
     connection.on("ReceiveFanfare", HandleFanfare);
     connection.start().then(function () {
         console.log("Hello, console. My Chat Bot is ready!");
-		console.log("Hello 3/27/2020");
+	console.log("Hello 3/30/2020");
         var myNotus = notus();
         myNotus.send({
             notusType: 'toast',
