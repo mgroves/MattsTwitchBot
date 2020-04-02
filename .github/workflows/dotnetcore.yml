@@ -24,7 +24,7 @@ jobs:
     - name: Build and Publish
       run: 
         dotnet build MattsTwitchBot.Web --configuration Release --no-restore
-        dotnet publish -c Release -o ./myapp 
+        dotnet publish MattsTwitchBot.Web -c Release -o ./myapp 
     - name: Test
       run: dotnet test MattsTwitchBot.Tests --no-restore --verbosity normal
     - name: Azure WebApp
