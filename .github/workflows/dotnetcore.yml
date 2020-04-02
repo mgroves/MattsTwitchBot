@@ -38,4 +38,4 @@ jobs:
         # Artifact name
         name: my-artifact
         # Directory containing files to upload
-        path: /MattsTwitchBot.Web/appsettings.Developerment.json
+        path: /MattsTwitchBot.Web/appsettings.Development.json
