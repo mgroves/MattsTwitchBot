@@ -27,6 +27,13 @@ jobs:
         dotnet publish MattsTwitchBot.Web -c Release -o ./myapp 
     - name: Test
       run: dotnet test MattsTwitchBot.Tests --no-restore --verbosity normal
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        # Artifact name
+        name: my-artifact
+        # Directory containing files to upload
+        path: ./myapp      
     - name: Azure WebApp
       uses: Azure/webapps-deploy@v2
       with:
@@ -35,10 +42,3 @@ jobs:
         # Applies to Web App only: Publish profile (*.publishsettings) file contents with Web Deploy secrets
         publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
         package: ./myapp 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        # Artifact name
-        name: my-artifact
-        # Directory containing files to upload
-        path: ./myapp
