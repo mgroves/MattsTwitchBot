@@ -48,6 +48,7 @@ namespace MattsTwitchBot.Tests.Core
         [TestCase("anything else", typeof(StoreMessage))]
         [TestCase("!soundeffect", typeof(SoundEffect))]
         [TestCase("!staticcommand", typeof(StaticMessage))]
+        [TestCase("!trout mike", typeof(Trout))]
         public async Task Commands_returns_the_correct_requests(string command, Type type)
         {
             // arrange

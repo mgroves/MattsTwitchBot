@@ -40,6 +40,8 @@ namespace MattsTwitchBot.Core
                     return new SoundEffect(x.Replace("!", ""));
                 case var x when await IsStaticCommand(x):
                     return new StaticMessage(x.Replace("!", ""), chatMessage.Channel);
+                case var x when x.StartsWith("!trout"):
+                    return new Trout(chatMessage);
                 default:
                     return new StoreMessage(chatMessage);
             }
