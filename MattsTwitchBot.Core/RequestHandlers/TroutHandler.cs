@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core.Requests;
 using MediatR;
@@ -20,6 +19,12 @@ namespace MattsTwitchBot.Core.RequestHandlers
 
         public async Task<Unit> Handle(Trout request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(request.UserToTrout))
+            {
+                _twitchClient.SendMessage(request.Channel, $"You must specify a user to trout.");
+                return default;
+            }
+
             var doesUserExist = await _apiWrapper.DoesUserExist(request.UserToTrout);
             if (!doesUserExist)
             {
