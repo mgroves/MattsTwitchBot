@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MattsTwitchBot.Tests", "Mat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB0F3F0C-B65B-4A7B-BD00-52E05CFFC52A}"
 	ProjectSection(SolutionItems) = preProject
+		.github\workflows\prtests.yml = .github\workflows\prtests.yml
 		README.adoc = README.adoc
+		.github\workflows\release.yml = .github\workflows\release.yml
 	EndProjectSection
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F7D69D90-4A64-49DE-9171-1530E66C8791}"
