@@ -19,7 +19,10 @@ namespace MattsTwitchBot.Core
 
         public async Task<bool> DoesUserExist(string username)
         {
-            var result = await _api.V5.Users.GetUserByNameAsync(username);
+            // defensively remove the @ symbol if it somehow makes it here
+            var usernameWithNoAt = username.Replace("@", "");
+
+            var result = await _api.V5.Users.GetUserByNameAsync(usernameWithNoAt);
             return result.Total > 0;
         }
     }
