@@ -1,4 +1,10 @@
-﻿export class FanfareHandler {
+﻿export function HandleFanfare(fanfareInfo) {
+    console.log(fanfareInfo);
+    var fanfare = new FanfareHandler(document.getElementById("ytvideo"));
+    fanfare.HandleFanfare(fanfareInfo);
+}
+
+class FanfareHandler {
     constructor(videoElement) {
         this.videoElement = videoElement;
     }

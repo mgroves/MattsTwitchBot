@@ -3,3 +3,42 @@
     bottom: 0;
     right: 0;
 }
+
+.socialMediaBadge {
+    position: absolute;
+    top: 10px;
+    right: -500px;
+    font-size: 50px;
+    font-family: Arial, sans-serif;
+    border-right: none !important;
+    padding: 7px;
+}
+
+.socialMediaBadge.twitter {
+    background-color: #1da0f1;
+    border: black;
+    border-style: solid;
+    border-width: 7px;
+    color: white;
+}
+.socialMediaBadge.github {
+    background-color: black;
+    border: white;
+    border-style: solid;
+    border-width: 7px;
+    color: white;
+}
+.socialMediaBadge.linkedin {
+    background-color: rgb(0, 119, 180);
+    border: white;
+    border-style: solid;
+    border-width: 7px;
+    color: white;
+}
+.socialMediaBadge.twitch {
+    background-color: rgb(144, 71, 254);
+    border: white;
+    border-style: solid;
+    border-width: 7px;
+    color: white;
+}

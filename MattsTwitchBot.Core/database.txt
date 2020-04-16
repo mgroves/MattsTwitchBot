@@ -18,3 +18,26 @@
 }
 
 Those should correspond to the files in hub.js
+
+For home page stuff (like social media badges), there must be a document with a key of "homePageInfo" like this:
+
+{
+  "badges": [
+    {
+      "icon": "twitter",
+      "text": "mgroves"
+    },
+    {
+      "icon": "github",
+      "text": "mgroves"
+    },
+    {
+      "icon": "linkedin",
+      "text": "mgroves"
+    },
+    {
+      "icon": "twitch",
+      "text": "matthewdgroves"
+    }
+  ]
+}

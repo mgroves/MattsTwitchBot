@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Couchbase;
+using Couchbase.Collections;
 using Couchbase.Core;
 using MattsTwitchBot.Core.Models;
 using MattsTwitchBot.Core.Requests;
