@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using MattsTwitchBot.Core.Models;
 using MattsTwitchBot.Core.Requests;
 using MediatR;
 using TwitchLib.Client.Interfaces;
@@ -10,37 +11,56 @@ namespace MattsTwitchBot.Core.RequestHandlers
     public class HelpHandler : IRequestHandler<Help>
     {
         private readonly ITwitchClient _twitchClient;
-        private Dictionary<string, string> _helpMessages;
+        private readonly IMediator _mediator;
 
-        public HelpHandler(ITwitchClient twitchClient)
+        public HelpHandler(ITwitchClient twitchClient, IMediator mediator)
         {
             _twitchClient = twitchClient;
-            _helpMessages = new Dictionary<string, string>();
-            _helpMessages.Add("!help", "Try these commands: !help !currentproject !so !profile !laugh !rimshot !badumtss - You can also get specific help. Example: !help rimshot");
-            _helpMessages.Add("!help currentproject", "!currentproject will announce a URL for more information about the current live coding project.");
-            _helpMessages.Add("!help so", "!so <username> will shout out the user (subscribers only)");
-            _helpMessages.Add("!help profile", "!profile will create a user profile for you. !profile-shout <message> will set your shout out message.");
-            _helpMessages.Add("!help laugh", "!laugh causes a laugh sound effect to be played on the stream (max once every 5 minutes)");
-            _helpMessages.Add("!help rimshot", "!rimshot causes a rimshot sound effect to be played on the stream (max once every 5 minutes)");
-            _helpMessages.Add("!help badumtss", "!badumtss causes a rimshot sound effect to be played on the stream (max once every 5 minutes)");
-        }
+            _mediator = mediator;
+       }
 
-        public Task<Unit> Handle(Help request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(Help request, CancellationToken cancellationToken)
         {
+            var helpMessages = await BuildHelpMessageDictionary();
+
             var message = request.Message;
-            var sendWhisperTo = message.Username;
+            var channel = request.Message.Channel;
 
-            if (_helpMessages.ContainsKey(message.Message))
-                SendWhisper(sendWhisperTo, _helpMessages[message.Message]);
+            if (helpMessages.ContainsKey(message.Message))
+                _twitchClient.SendMessage(channel, helpMessages[message.Message]);
             else
-                SendWhisper(sendWhisperTo, _helpMessages["!help"]);
+                _twitchClient.SendMessage(channel, helpMessages["!help"]);
 
-            return Unit.Task;
+            return default;
         }
 
-        private void SendWhisper(string sendWhisperTo, string helpMessage)
+        private async Task<Dictionary<string, string>> BuildHelpMessageDictionary()
         {
-            _twitchClient.SendWhisper(sendWhisperTo, helpMessage);
+            var helpMessages = new Dictionary<string, string>();
+            
+            // hardcoded commands
+            var commands = new List<string>();
+            commands.Add("!help");
+            commands.Add("!currentproject");
+            commands.Add("!so");
+            commands.Add("!profile");
+            commands.Add("!laugh");
+            commands.Add("!rimshot");
+            commands.Add("!badumtss");
+
+            // static content commands
+            var staticCommands = await _mediator.Send<ValidStaticCommands>(new StaticCommandsLookup());
+            staticCommands.Commands.ForEach(c => commands.Add(c.Command));
+            staticCommands.Commands.ForEach(c => helpMessages.Add("!help " + c.Command.Replace("!",""),"This command displays an interesting message."));
+
+            helpMessages.Add("!help", $"Try these commands: {string.Join(" ", commands)} - You can also get specific help. Example: !help rimshot");
+            helpMessages.Add("!help currentproject", "!currentproject will announce a URL for more information about the current live coding project.");
+            helpMessages.Add("!help so", "!so <username> will shout out the user (subscribers only)");
+            helpMessages.Add("!help profile", "!profile will create a user profile for you. !profile-shout <message> will set your shout out message.");
+            helpMessages.Add("!help laugh", "!laugh causes a laugh sound effect to be played on the stream (max once every 5 minutes)");
+            helpMessages.Add("!help rimshot", "!rimshot causes a rimshot sound effect to be played on the stream (max once every 5 minutes)");
+            helpMessages.Add("!help badumtss", "!badumtss causes a rimshot sound effect to be played on the stream (max once every 5 minutes)");
+            return helpMessages;
         }
     }
 }

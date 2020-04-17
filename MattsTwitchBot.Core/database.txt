@@ -41,3 +41,18 @@ For home page stuff (like social media badges), there must be a document with a 
     }
   ]
 }
+
+For static commands (commands which just show some fixed text), there must be a document with a key of "staticContentCommands" like this:
+
+{
+  "commands": [
+    {
+      "command": "couchbase",
+      "content": "Couchbase is a NoSQL document database. Get the free community edition here: https://couchbase.com/downloads"
+    },
+    {
+      "command": "whatiscouchbase",
+      "content": "Couchbase is a NoSQL document database. Get the free community edition here: https://couchbase.com/downloads"
+    }
+  ]
+}
