@@ -28,6 +28,8 @@ These are unit tests (and supporting fakes). Currently only testing the various 
 
 === appsettings.Development.json
 
+Create your own appsetting.Development.json file. You can just rename the sample appsetting.DevelopmentTemplate.json.
+
 Put your various Twitch tokens, Couchbase connection/credentials information in here. Also enter a "bearer token" for authorization purposes. Only you will need to know this token. Make it something secure in production, something easy in development. Once the bearer token is validated, it will be put into a cookie, so you don't need to use it with every single HTTP request.
 
 === Couchbase
