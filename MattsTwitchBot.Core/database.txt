@@ -18,3 +18,41 @@
 }
 
 Those should correspond to the files in hub.js
+
+For home page stuff (like social media badges), there must be a document with a key of "homePageInfo" like this:
+
+{
+  "badges": [
+    {
+      "icon": "twitter",
+      "text": "mgroves"
+    },
+    {
+      "icon": "github",
+      "text": "mgroves"
+    },
+    {
+      "icon": "linkedin",
+      "text": "mgroves"
+    },
+    {
+      "icon": "twitch",
+      "text": "matthewdgroves"
+    }
+  ]
+}
+
+For static commands (commands which just show some fixed text), there must be a document with a key of "staticContentCommands" like this:
+
+{
+  "commands": [
+    {
+      "command": "couchbase",
+      "content": "Couchbase is a NoSQL document database. Get the free community edition here: https://couchbase.com/downloads"
+    },
+    {
+      "command": "whatiscouchbase",
+      "content": "Couchbase is a NoSQL document database. Get the free community edition here: https://couchbase.com/downloads"
+    }
+  ]
+}

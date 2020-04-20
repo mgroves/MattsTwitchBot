@@ -42,6 +42,8 @@ namespace MattsTwitchBot.Core
                     return new StaticMessage(x.Replace("!", ""), chatMessage.Channel);
                 case var x when x.StartsWith("!trout"):
                     return new Trout(chatMessage);
+                case var x when x.StartsWith("!lurk"):
+                    return new Lurk(chatMessage);
                 default:
                     return new StoreMessage(chatMessage);
             }

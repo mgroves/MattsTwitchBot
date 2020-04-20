@@ -331,3 +331,4 @@ ASALocalRun/
 Config.Private.cs
 /couchbasetwitchbot
 /MattsTwitchBot.Web/appsettings.Release.json
+appsettings.Development.json

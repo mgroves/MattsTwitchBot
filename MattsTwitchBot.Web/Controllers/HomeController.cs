@@ -1,15 +1,27 @@
-﻿using MattsTwitchBot.Web.Filters;
+﻿using System.Threading.Tasks;
+using MattsTwitchBot.Core.Models;
+using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Web.Filters;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MattsTwitchBot.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IMediator _mediator;
+
+        public HomeController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
         [Route("/")]
         [BearerToken]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var homePageInfo = await _mediator.Send<HomePageInfo>(new GetHomePageInfo());
+            return View(homePageInfo);
         }
 
         // ***** EXPERIMENTAL
