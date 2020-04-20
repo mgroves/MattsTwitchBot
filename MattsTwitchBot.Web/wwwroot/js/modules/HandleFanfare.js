@@ -4,7 +4,7 @@
     fanfare.HandleFanfare(fanfareInfo);
 }
 
-class FanfareHandler {
+export class FanfareHandler {
     constructor(videoElement) {
         this.videoElement = videoElement;
     }
