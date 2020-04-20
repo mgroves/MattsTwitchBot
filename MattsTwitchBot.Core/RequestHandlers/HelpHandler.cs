@@ -48,6 +48,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
             commands.Add("!rimshot");
             commands.Add("!badumtss");
             commands.Add("!trout");
+            commands.Add("!lurk");
 
             // static content commands
             var staticCommands = await _mediator.Send<ValidStaticCommands>(new StaticCommandsLookup());
@@ -62,6 +63,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
             helpMessages.Add("!help rimshot", "!rimshot causes a rimshot sound effect to be played on the stream (max once every 5 minutes)");
             helpMessages.Add("!help badumtss", "!badumtss causes a rimshot sound effect to be played on the stream (max once every 5 minutes)");
             helpMessages.Add("!help trout", "!trout <username> to slap someone with a trout");
+            helpMessages.Add("!help lurk", "!lurk just to let me know that you're here but lurking");
             return helpMessages;
         }
     }

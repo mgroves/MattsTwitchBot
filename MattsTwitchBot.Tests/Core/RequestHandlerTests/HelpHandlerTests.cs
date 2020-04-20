@@ -68,6 +68,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         [TestCase("!help laugh", "!laugh causes")]
         [TestCase("!help so", "!so <username> will")]
         [TestCase("!help rimshot", "!rimshot causes a rimshot")]
+        [TestCase("!help lurk", "!lurk just to let me know")]
         public async Task Help_will_provide_details_on_specific_commands(string messageText, string startsWith)
         {
             // arrange
