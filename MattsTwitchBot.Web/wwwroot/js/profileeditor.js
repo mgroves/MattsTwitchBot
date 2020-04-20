@@ -1,4 +1,4 @@
-﻿import { FanfareHandler } from './modules/fanfare.js';
+﻿import { FanfareHandler } from './modules/HandleFanfare.js';
 
 function GetFanfareInfoFromForm() {
     var fanfareInfo = {};
