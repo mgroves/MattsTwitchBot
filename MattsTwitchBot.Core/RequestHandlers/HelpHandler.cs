@@ -52,8 +52,8 @@ namespace MattsTwitchBot.Core.RequestHandlers
 
             // static content commands
             var staticCommands = await _mediator.Send<ValidStaticCommands>(new StaticCommandsLookup());
-            staticCommands.Commands.ForEach(c => commands.Add(c.Command));
-            staticCommands.Commands.ForEach(c => helpMessages.Add("!help " + c.Command.Replace("!",""),"This command displays an interesting message."));
+            staticCommands.Commands.ForEach(c => commands.Add("!" + c.Command));
+            staticCommands.Commands.ForEach(c => helpMessages.Add("!help " + c.Command,"This command displays an interesting message."));
 
             helpMessages.Add("!help", $"Try these commands: {string.Join(" ", commands)} - You can also get specific help. Example: !help rimshot");
             helpMessages.Add("!help currentproject", "!currentproject will announce a URL for more information about the current live coding project.");
