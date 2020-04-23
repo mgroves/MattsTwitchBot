@@ -57,7 +57,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
 
             helpMessages.Add("!help", $"Try these commands: {string.Join(" ", commands)} - You can also get specific help. Example: !help rimshot");
             helpMessages.Add("!help currentproject", "!currentproject will announce a URL for more information about the current live coding project.");
-            helpMessages.Add("!help so", "!so <username> will shout out the user (subscribers only)");
+            helpMessages.Add("!help so", "!so <username> will shout out the user (subscribers and mods only)");
             helpMessages.Add("!help profile", "!profile will create a user profile for you. !profile-shout <message> will set your shout out message.");
             helpMessages.Add("!help laugh", "!laugh causes a laugh sound effect to be played on the stream (max once every 5 minutes)");
             helpMessages.Add("!help rimshot", "!rimshot causes a rimshot sound effect to be played on the stream (max once every 5 minutes)");

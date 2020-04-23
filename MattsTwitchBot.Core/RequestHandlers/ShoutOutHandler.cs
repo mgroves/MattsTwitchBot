@@ -26,7 +26,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
         {
             var message = request.Message;
 
-            if (!message.IsSubscriber)
+            if (!message.IsSubscriber && !message.IsModerator)
                 return default;
 
             var userToShout = ParseUserNameFromCommand(message.Message);

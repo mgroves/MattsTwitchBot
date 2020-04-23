@@ -21,6 +21,9 @@ namespace MattsTwitchBot.Web.Controllers
         [BearerToken]
         public async Task<IActionResult> ProfileEditor(string twitchUsername)
         {
+            if (twitchUsername != twitchUsername.ToLower())
+                return RedirectToAction("ProfileEditor", new {twitchUsername = twitchUsername.ToLower()});
+
             await _mediator.Send(new CreateProfileIfNotExists(twitchUsername));
 
             var twitcherProfile = await _mediator.Send(new GetProfile(twitchUsername));

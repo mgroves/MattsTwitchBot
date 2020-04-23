@@ -34,24 +34,33 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             _handler = new ShoutOutHandler(_mockApiWrapper.Object, _mockTwitchClient.Object, _mockBucketProvider.Object);
         }
 
-        [Test]
-        public async Task ShoutOut_should_not_do_anything_for_non_subscribers()
+        [TestCase(true, true, 1, Description = "user who is mod AND sub can shout out")]
+        [TestCase(true, false, 1, Description = "user who is sub but not mod can shout out")]
+        [TestCase(false, true, 1, Description = "user who is mod but not sub can shout out")]
+        [TestCase(false, false, 0, Description = "user who is not mod or sub can NOT shout out")]
+        public async Task ShoutOut_is_limited_to_mods_and_subs(bool isSub, bool isMod, int numVerified)
         {
             // arrange
+            var userToShout = "someusername";
             var twitchLibMessage = TwitchLibMessageBuilder.Create()
                 .WithUsername("NonSub")
                 .Build();
             var chatMessage = ChatMessageBuilder.Create()
                 .WithTwitchLibMessage(twitchLibMessage)
-                .WithIsSubscriber(false)
+                .WithMessage($"!so {userToShout}")
+                .WithIsSubscriber(isSub)
+                .WithIsModerator(isMod)
                 .Build();
             var request = new ShoutOut(chatMessage);
+            _mockApiWrapper.Setup(m =>
+                m.DoesUserExist(It.IsAny<string>())).ReturnsAsync(true);
 
             // act
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockTwitchClient.Verify(x => x.SendMessage(It.IsAny<string>(), It.IsAny<string>(), false), Times.Never);
+            _mockTwitchClient.Verify(x => x.SendMessage(It.IsAny<string>(), It.IsAny<string>(), false),
+                Times.Exactly(numVerified));
         }
 
         [Test]
