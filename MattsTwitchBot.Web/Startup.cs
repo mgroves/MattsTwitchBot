@@ -56,7 +56,7 @@ namespace MattsTwitchBot.Web
                 var oauthKey = Configuration.GetValue<string>("Twitch:OauthKey");
                 var credentials = new ConnectionCredentials(userName, oauthKey);
                 var twitchClient = new TwitchClient();
-                twitchClient.Initialize(credentials, "matthewdgroves");
+                twitchClient.Initialize(credentials, userName);
                 return twitchClient;
             });
             services.AddSingleton<ITwitchApiWrapper>(x =>
