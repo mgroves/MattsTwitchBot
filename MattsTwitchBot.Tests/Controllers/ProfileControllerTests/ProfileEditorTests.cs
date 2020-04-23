@@ -4,6 +4,7 @@ using MattsTwitchBot.Core.Models;
 using MattsTwitchBot.Core.Requests;
 using MattsTwitchBot.Web.Controllers;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 
@@ -29,7 +30,7 @@ namespace MattsTwitchBot.Tests.Controllers.ProfileControllerTests
         public async Task Controller_will_send_CreateProfileIfNotExists_request()
         {
             // arrange
-            var username = "CopperBeardy";
+            var username = "copperbeardy";
 
             // act
             await _controller.ProfileEditor(username);
@@ -40,5 +41,17 @@ namespace MattsTwitchBot.Tests.Controllers.ProfileControllerTests
                     It.IsAny<CancellationToken>()), Times.Once);
         }
 
+        [Test]
+        public async Task If_profile_name_is_not_all_lowercase_redirect_to_all_lowercase()
+        {
+            // arrange
+            var username = "SurlyDev";
+
+            // act
+            var result = await _controller.ProfileEditor(username);
+
+            // assert
+            Assert.That(result, Is.InstanceOf<RedirectToActionResult>());
+        }
     }
 }
