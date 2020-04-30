@@ -17,6 +17,14 @@ namespace MattsTwitchBot.Web.Controllers
         }
 
         [HttpGet]
+        [Route("/profile")]
+        [BearerToken]
+        public IActionResult ProfileRedirect(string twitchUsername)
+        {
+            return RedirectToAction("ProfileEditor", new {twitchUsername = twitchUsername });
+        }
+
+        [HttpGet]
         [Route("/profile/{twitchUsername}")]
         [BearerToken]
         public async Task<IActionResult> ProfileEditor(string twitchUsername)
