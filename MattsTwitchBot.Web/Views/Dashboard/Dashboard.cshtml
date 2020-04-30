@@ -1,0 +1,51 @@
+﻿@model MattsTwitchBot.Web.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = null;
+}
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/css/site.css" media="screen" charset="urf-8" />
+</head>
+<body>
+    
+    @Html.ValidationSummary()
+
+    <form method="POST">
+
+        <h2>Home Page Stuff</h2>
+        <p>
+            @* TODO: put a real JSON editor in here *@
+            <textarea id="HomePageInfo" name="HomePageInfo" rows="15" style="width: 800px;">@Model.HomePageInfoJson</textarea>
+        </p>
+
+        <h2>Static Content Commands</h2>
+        <p>
+            @* TODO: put a real JSON editor in here *@
+            <textarea id="StaticContentCommands" name="StaticContentCommands" rows="15" style="width: 800px;">@Model.StaticContentCommandsJson</textarea>
+        </p>
+
+        <input type="submit" value="Save All" />
+    </form>
+
+    <h2>Profiles:</h2>
+    <fieldset style="width: 800px;">
+        <ul>
+            @if (Model.Profiles == null || !Model.Profiles.Any())
+            {
+                <li>No profiles yet.</li>
+            }
+            @foreach (var profile in Model.Profiles)
+            {
+                <li><a href="/profile/@profile">@profile</a></li>
+            }
+        </ul>
+        <form method="get" action="/profile">
+            <input type="text" name="twitchUsername" id="twitchUsername" placeholder="Create a new profile" />
+            <input type="submit" value="New Profile" />
+        </form>
+    </fieldset>
+</body>
+</html>
+

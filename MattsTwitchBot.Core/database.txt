@@ -56,3 +56,8 @@ For static commands (commands which just show some fixed text), there must be a 
     }
   ]
 }
+
+
+index:
+
+CREATE INDEX ix_type ON twitchchat (type) WHERE type IS NOT MISSING;
