@@ -42,3 +42,8 @@
     border-width: 7px;
     color: white;
 }
+
+.validation-summary-errors {
+    color: red;
+    background-color: yellow;
+}
