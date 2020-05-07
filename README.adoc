@@ -22,7 +22,7 @@ This is an ASP.NET Core 3 project. It does up to three things:
 
 === MattsTwitchBot.Tests
 
-These are unit tests (and supporting fakes). Currently only testing the various handlers.
+These are unit tests (and supporting fakes).
 
 == Getting set up
 
@@ -30,21 +30,20 @@ These are unit tests (and supporting fakes). Currently only testing the various 
 
 Create your own appsetting.Development.json file. You can just rename the sample appsetting.DevelopmentTemplate.json.
 
-Put your various Twitch tokens, Couchbase connection/credentials information in here. Also enter a "bearer token" for authorization purposes. Only you will need to know this token. Make it something secure in production, something easy in development. Once the bearer token is validated, it will be put into a cookie, so you don't need to use it with every single HTTP request.
+Put your various Twitch tokens, Couchbase connection/credentials information in here. Also enter a "bearer token" for authorization purposes. Only *you* will need to know this token. Make it something secure in production, something easy if you are doing some local coding work. Once the bearer token is validated, it will be put into a cookie, so you don't need to use it with every single HTTP request.
 
 === Couchbase
 
-Currently you still need to do *some* manual setup of the Couchbase node. You will need to setup the cluster (you only need the data service at this point, but you should probably add query/index, and you will need eventing for the experimental stuff).
+Currently you still need to do *some* manual setup of the Couchbase node. You will need to setup the cluster with data, query, index services enabled.
 
-Create a bucket called "twitchchat" (or change the name in Startup.cs if you want something different).
+Create a bucket called "twitchchat" (or change the name in appsettings if you want something different).
 
-=== Startup.cs
-
-Notice the `app.UseWhen` statement. This is part of the experimental eventing stuff. Feel free to remove that if you aren't doing that.
+You will also need to create an index: `CREATE INDEX ix_type ON twitchchat (type) WHERE type IS NOT MISSING;`
 
 == Administrating
 
-Right now, there are only two pages:
+Here are the pages:
 
 * `/` (home) - this is the page meant to be displayed on Twitch (put a url into OBS like http://foo/?token=mytoken)
-* `/profile/<twitchusername>`` - this is the page to edit a user profile (for instance https://foo/profile/calvinaallen?token=mytoken)
+* `/dashboard` - this is a management/configuration screen to control static commands, social media badges
+* `/profile/<twitchusername>`` - this is the page to edit a user profile (for instance https://foo/profile/calvinaallen?token=mytoken) - you can go directly here, or access it from the dashboard
