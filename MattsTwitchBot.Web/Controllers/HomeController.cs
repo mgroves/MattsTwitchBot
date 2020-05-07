@@ -23,18 +23,6 @@ namespace MattsTwitchBot.Web.Controllers
             var homePageInfo = await _mediator.Send<HomePageInfo>(new GetHomePageInfo());
             return View(homePageInfo);
         }
-
-        // ***** EXPERIMENTAL
-        [HttpPost]
-        [Route("/couchbasenotify")]
-        [BearerToken]
-        public IActionResult CouchbaseNotify([FromBody] CouchbaseNotification body)
-        {
-            // this should be triggered by a Couchbase event
-            // See NotifyTwitchBot.couchbase.eventing.js!
-            return Content(body.Message);
-        }
-        // *****
     }
 
     public class CouchbaseNotification

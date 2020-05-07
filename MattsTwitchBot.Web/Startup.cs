@@ -45,7 +45,7 @@ namespace MattsTwitchBot.Web
 
             services
                 .AddCouchbase(Configuration.GetSection("Couchbase"))
-                .AddCouchbaseBucket<ITwitchBucketProvider>("twitchchat");
+                .AddCouchbaseBucket<ITwitchBucketProvider>(Configuration.GetValue<string>("Couchbase:BucketName"));
 
             services.AddMediatR(Assembly.GetAssembly(typeof(MattsChatBotHostedService)));
 
@@ -94,16 +94,6 @@ namespace MattsTwitchBot.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            // ********
-            // if a request is coming from the same subnet, don't force into HTTPS
-            // the reason for this is ONLY for the NotifyTwitchBot.couchbase.eventing.js
-            // until I can figure out why HTTPS between images is not working
-            // app.UseWhen(httpContext =>
-            //         !httpContext.Connection.RemoteIpAddress.IsInSameSubnet(httpContext.Connection.LocalIpAddress,
-            //             IPAddress.Parse("255.255.255.0").MapToIPv6()),
-            //     httpApp => httpApp.UseHttpsRedirection());
-            // ********
 
             app.UseStaticFiles();
             app.UseCookiePolicy();
