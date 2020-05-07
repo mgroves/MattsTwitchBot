@@ -1,10 +1,7 @@
-﻿using System.Net;
-using System.Reflection;
+﻿using System.Reflection;
 using Couchbase.Extensions.DependencyInjection;
 using MattsTwitchBot.Core;
-using MattsTwitchBot.Web.Extensions;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
