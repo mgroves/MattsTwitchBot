@@ -24,11 +24,4 @@ namespace MattsTwitchBot.Web.Controllers
             return View(homePageInfo);
         }
     }
-
-    public class CouchbaseNotification
-    {
-        public string Username { get; set; }
-        public string Channel { get; set; }
-        public string Message { get; set; }
-    }
 }
