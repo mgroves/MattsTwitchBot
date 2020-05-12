@@ -1,0 +1,62 @@
+﻿@model MattsTwitchBot.Web.Models.ManageTriviaQuestionsViewModel
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <title>Manage Trivia Questions</title>
+</head>
+
+<body>
+<section class="section">
+    <div class="container">
+        
+        @if (TempData.ContainsKey("Flash"))
+        {
+            <div class="notification is-success">
+                @TempData["Flash"]
+            </div>
+        }
+        
+        <p>@Html.ActionLink("Submit New Question", "SubmitTriviaQuestion")</p>
+
+        <table class="table is-bordered is-striped is-hoverable">
+            <tr>
+                <th>Question</th>
+                <th>Approved?</th>
+                <th>Actions</th>
+            </tr>
+            @if (Model.Questions == null || !Model.Questions.Any())
+            {
+                <tr>
+                    <td colspan="3">No trivia questions (yet).</td>
+                </tr>
+            }
+            @foreach (var question in Model.Questions)
+            {
+                <tr>
+                    <td>@question.Question</td>
+                    <td>@question.Approved</td>
+                    <td>@Html.ActionLink("Details", "ManageTriviaQuestion", new {id = @question.Id})</td>
+                </tr>
+            }
+        </table>
+
+        <nav class="pagination" role="navigation" aria-label="pagination">
+            @if (Model.CurrentPageNum > 0)
+            {
+                @Html.ActionLink("Previous", "ManageTriviaQuestions", new {pageNum = Model.CurrentPageNum - 1}, new {@class = "pagination-previous"})
+            }
+            @if (Model.CurrentPageNum <= Model.TotalPages && Model.TotalPages > 0)
+            {
+                @Html.ActionLink("Next page", "ManageTriviaQuestions", new {pageNum = Model.CurrentPageNum + 1}, new {@class = "pagination-next"})
+            }
+        </nav>
+    </div>
+</section>
+</body>
+</html>

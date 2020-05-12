@@ -23,6 +23,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
             var n1ql = @"SELECT META(t).id, t.*
                 FROM `" + _bucket.Name + @"` t
                 WHERE t.type = 'trivia'
+                AND t.approved = true
                 ORDER BY RANDOM()
                 LIMIT $limit;";
             var query = QueryRequest.Create(n1ql);

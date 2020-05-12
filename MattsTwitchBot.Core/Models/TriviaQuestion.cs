@@ -8,5 +8,12 @@ namespace MattsTwitchBot.Core.Models
         public string Question { get; set; }
         public List<string> Options { get; set; }
         public int Answer { get; set; }
+        public bool Approved { get; set; }
+        public string Type => "trivia";
+
+        public bool ShouldSerializeId()
+        {
+            return false;
+        }
     }
 }
