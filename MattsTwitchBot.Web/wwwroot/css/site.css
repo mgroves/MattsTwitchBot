@@ -47,3 +47,9 @@
     color: red;
     background-color: yellow;
 }
+
+.trivia-answer {
+    font-weight: bold;
+    text-decoration: underline;
+    border: 6px solid white;
+}
