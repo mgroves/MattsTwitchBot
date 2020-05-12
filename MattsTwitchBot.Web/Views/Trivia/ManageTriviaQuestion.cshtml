@@ -1,0 +1,108 @@
+﻿@model MattsTwitchBot.Web.Models.TriviaQuestionEditModel
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css" />
+    <title>Submit your own trivia question!</title>
+</head>
+
+<body>
+    <section class="section">
+    <div class="container">
+        
+        @if (TempData.ContainsKey("Flash"))
+        {
+            <div class="notification is-success">
+                @TempData["Flash"]
+            </div>
+        }
+        
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="notification is-danger">
+                @Html.ValidationSummary()
+            </div>
+        }
+
+        <h1 class="title">Submit your trivia question!</h1>
+        
+        <p>Your pre-show trivia could be featured before an upcoming live stream! Submit your
+            question, four possible options, and select the correct answer. Trivia questions are subject to approval.</p>
+
+        <form method="post">
+            
+            <input type="hidden" id="id" name="id" value="@Model.Id" />
+
+            <div class="field">
+                <label class="label">Question</label>
+                <div class="control">
+                    <input class="input" type="text" placeholder="Enter your trivia question here" id="question" name="question" value="@Model.Question" />
+                </div>
+            </div>
+            
+            <div class="control">
+                <div class="columns">
+                    <div class="column is-narrow">
+                        <label class="radio">
+                            @Html.RadioButton("answer", "0", Model.Answer == 0)
+                        </label>
+                    </div>
+                    <div class="column">
+                        <input class="input" type="text" placeholder="Enter first option here" id="option0" name="option0" value="@Model.Option0" />
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column is-narrow">
+                        <label class="radio">
+                            @Html.RadioButton("answer", "1", Model.Answer == 1)
+                        </label>
+                    </div>
+                    <div class="column">
+                        <input class="input" type="text" placeholder="Enter second option here" id="option1" name="option1" value="@Model.Option1" />
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column is-narrow">
+                        <label class="radio">
+                            @Html.RadioButton("answer", "2", Model.Answer == 2)
+                        </label>
+                    </div>
+                    <div class="column">
+                        <input class="input" type="text" placeholder="Enter third option here" id="option2" name="option2" value="@Model.Option2" />
+                    </div>
+                </div>
+                <div class="columns">
+                    <div class="column is-narrow">
+                        <label class="radio">
+                            @Html.RadioButton("answer", "3", Model.Answer == 3)
+                        </label>
+                    </div>
+                    <div class="column">
+                        <input class="input" type="text" placeholder="Enter fourth option here" id="option3" name="option3" value="@Model.Option3" />
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <div class="control">
+                        <label class="checkbox">
+                            @Html.CheckBox("approved", Model.Approved)
+                            Approved?
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="control">
+                        <input type="submit" class="button is-link" value="Submit" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    </section>
+</body>
+</html>
