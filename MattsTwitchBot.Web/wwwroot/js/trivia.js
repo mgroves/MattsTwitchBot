@@ -14,7 +14,7 @@
         var obj = questionData[i];
 
         // render the question and answers
-        obj.autoSlideTime = 60000;
+        obj.autoSlideTime = 20000;
         var template = document.getElementById('template').innerHTML;
         var rendered = Mustache.render(template, obj);
 
