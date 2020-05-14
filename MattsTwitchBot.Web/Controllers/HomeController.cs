@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using MattsTwitchBot.Core.Models;
 using MattsTwitchBot.Core.Requests;
 using MattsTwitchBot.Web.Filters;

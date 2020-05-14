@@ -5,6 +5,7 @@ using MattsTwitchBot.Core.Requests;
 using MattsTwitchBot.Web.Filters;
 using MattsTwitchBot.Web.Models;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MattsTwitchBot.Web.Controllers
@@ -34,8 +35,7 @@ namespace MattsTwitchBot.Web.Controllers
             return Ok(viewModel);
         }
 
-        // TODO: use oauth?
-        [BearerToken]
+        [Authorize]
         [HttpGet]
         [Route("/trivia/submit")]
         public async Task<IActionResult> SubmitTriviaQuestion()
@@ -43,9 +43,7 @@ namespace MattsTwitchBot.Web.Controllers
             return View(new TriviaQuestionEditModel());
         }
 
-
-        // TODO: use oauth?
-        [BearerToken]
+        [Authorize]
         [HttpPost]
         [Route("/trivia/submit")]
         public async Task<IActionResult> SubmitTriviaQuestion(TriviaQuestionEditModel model)
@@ -56,6 +54,7 @@ namespace MattsTwitchBot.Web.Controllers
             {
                 var req = model.MapToRequest();
                 req.Approved = false;   // always false when first being submitted
+                req.SubmittedBy = User.Identity.Name;
                 await _mediator.Send(req);
                 TempData["Flash"] = "Thank you for submitting a trivia question! Submit another one!";
                 return RedirectToAction("SubmitTriviaQuestion");
