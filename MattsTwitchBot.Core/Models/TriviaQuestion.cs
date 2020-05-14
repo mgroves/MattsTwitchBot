@@ -10,6 +10,7 @@ namespace MattsTwitchBot.Core.Models
         public int Answer { get; set; }
         public bool Approved { get; set; }
         public string Type => "trivia";
+        public string SubmittedBy { get; set; }
 
         public bool ShouldSerializeId()
         {

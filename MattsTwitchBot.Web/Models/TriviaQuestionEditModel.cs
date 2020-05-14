@@ -21,6 +21,7 @@ namespace MattsTwitchBot.Web.Models
             this.Option2 = resp.Options[2];
             this.Option3 = resp.Options[3];
             this.Approved = resp.Approved;
+            this.SubmittedBy = resp.SubmittedBy;
         }
 
         public string Id { get; set; }
@@ -31,6 +32,7 @@ namespace MattsTwitchBot.Web.Models
         public string Option2 { get; set; }
         public string Option3 { get; set; }
         public bool Approved { get; set; }
+        public string SubmittedBy { get; set; }
 
         public void Validate(ModelStateDictionary modelState)
         {
@@ -50,6 +52,7 @@ namespace MattsTwitchBot.Web.Models
             req.Options = new List<string> {this.Option0, this.Option1, this.Option2, this.Option3};
             req.Approved = this.Approved;
             req.Id = this.Id;
+            req.SubmittedBy = this.SubmittedBy;
             return req;
         }
     }

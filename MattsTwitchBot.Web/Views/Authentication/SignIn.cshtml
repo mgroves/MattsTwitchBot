@@ -1,0 +1,13 @@
+﻿<div class="jumbotron">
+    <h1>Sign in!</h1>
+    <p class="lead text-left">To get started, please sign in:</p>
+
+    <form action="/signin" method="post">
+        <input type="hidden" name="Provider" value="Twitch" />
+        <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl" />
+
+        <button class="btn btn-lg btn-primary m-1" type="submit">
+            <i class="fab fa-twitch"></i> Connect using Twitch
+        </button>
+    </form>
+</div>

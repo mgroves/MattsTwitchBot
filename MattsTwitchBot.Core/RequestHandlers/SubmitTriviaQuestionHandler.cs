@@ -24,6 +24,7 @@ namespace MattsTwitchBot.Core.RequestHandlers
             trivia.Question = request.Question;
             trivia.Options = request.Options;
             trivia.Approved = request.Approved;
+            trivia.SubmittedBy = request.SubmittedBy;
 
             var id = request.Id;
             if (string.IsNullOrEmpty(id))

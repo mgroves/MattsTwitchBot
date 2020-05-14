@@ -13,12 +13,12 @@
     <div class="reveal">
         <div class="slides">
             <section id="slide-intro" data-autoslide="30000">
-                <h2>Welcome!</h2>
+                <p>Welcome!</p>
                 <p>The stream will be starting soon. Stay tuned for some pre-show trivia.</p>
             </section>
             
             <section>
-                <h2>Thanks for playing!</h2>
+                <p>Thanks for playing!</p>
                 <p>How many did you get right? Stay tuned, the stream will start soon.</p>
             </section>
         </div>
@@ -27,9 +27,10 @@
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.4.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.1.0/mustache.min.js"></script>
-    <script id="template" type="x-tmpl-mustache">
+<script id="template" type="x-tmpl-mustache">
         <section data-transition="fade-in fade-out" data-autoslide="{{ autoSlideTime }}">
-            <h2>{{ question }}</h2>
+            <p><strong>{{ question }}</strong></p>
+            {{#submittedBy}}<p><small>Submitted by: <strong>{{submittedBy}}</strong></small></p>{{/submittedBy}}
             <ol>
                 {{#options}}
                 <li>{{{.}}}</li>

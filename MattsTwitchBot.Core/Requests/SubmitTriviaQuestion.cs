@@ -10,5 +10,6 @@ namespace MattsTwitchBot.Core.Requests
         public List<string> Options { get; set; }
         public bool Approved { get; set; }
         public string Id { get; set; }
+        public string SubmittedBy { get; set; }
     }
 }

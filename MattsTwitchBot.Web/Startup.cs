@@ -2,6 +2,7 @@
 using Couchbase.Extensions.DependencyInjection;
 using MattsTwitchBot.Core;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -35,6 +36,21 @@ namespace MattsTwitchBot.Web
                 options.CheckConsentNeeded = context => false;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/signin";
+                    options.LogoutPath = "/signout";
+                })
+                .AddTwitch(options =>
+                {
+                    options.ClientId = Configuration.GetValue<string>("Twitch:ApiClientId");
+                    options.ClientSecret = Configuration.GetValue<string>("Twitch:ApiClientSecret");
+                });
 
             services.AddHttpContextAccessor();
 
@@ -96,6 +112,9 @@ namespace MattsTwitchBot.Web
             app.UseCookiePolicy();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
