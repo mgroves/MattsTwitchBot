@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.OneOffs;
 using Moq;
 using NUnit.Framework;
 using TwitchLib.Client.Interfaces;

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Dashboard;
 using MattsTwitchBot.Web.Extensions;
 using MattsTwitchBot.Web.Filters;
 using MattsTwitchBot.Web.Models;
@@ -37,6 +37,8 @@ namespace MattsTwitchBot.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> DashboardPost(string homePageInfo, string staticContentCommands)
         {
+            // TODO: validate if either string is actually valid
+
             // sanity check validation on the JSON
             if(!homePageInfo.IsSaneJsonForType<HomePageInfo>())
                 ModelState.AddModelError("homePageInfoJson", "That doesn't look like valid JSON for Home Page Stuff");

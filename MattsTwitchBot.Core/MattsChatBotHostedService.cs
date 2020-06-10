@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Main;
 using MediatR;
 using Microsoft.Extensions.Hosting;
 using TwitchLib.Client.Events;

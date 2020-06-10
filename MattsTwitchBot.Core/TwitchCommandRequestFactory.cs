@@ -1,6 +1,10 @@
 ﻿using System.Threading.Tasks;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Chat;
+using MattsTwitchBot.Core.RequestHandlers.Main;
+using MattsTwitchBot.Core.RequestHandlers.OneOffs;
+using MattsTwitchBot.Core.RequestHandlers.Profile;
+using MattsTwitchBot.Core.RequestHandlers.StaticCommands;
 using MediatR;
 using TwitchLib.Client.Models;
 

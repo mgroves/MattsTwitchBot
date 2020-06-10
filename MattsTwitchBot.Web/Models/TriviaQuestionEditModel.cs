@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Trivia;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MattsTwitchBot.Web.Models

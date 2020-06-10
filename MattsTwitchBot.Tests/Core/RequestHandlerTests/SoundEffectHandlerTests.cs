@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Main;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
 using NUnit.Framework;

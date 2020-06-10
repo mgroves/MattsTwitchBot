@@ -5,7 +5,7 @@ using Couchbase;
 using Couchbase.Core;
 using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Chat;
 using Moq;
 using NUnit.Framework;
 using TwitchLib.Client.Models;
