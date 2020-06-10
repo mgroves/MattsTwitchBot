@@ -41,7 +41,10 @@
                 <tr>
                     <td>@question.Question</td>
                     <td>@question.Approved</td>
-                    <td>@Html.ActionLink("Details", "ManageTriviaQuestion", new {id = @question.Id})</td>
+                    <td>
+                        @Html.ActionLink("[Details]", "ManageTriviaQuestion", new {id = @question.Id})
+                        @Html.ActionLink("[Delete]", "DeleteTriviaQuestion", "Trivia", new { id = @question.Id }, new { onclick ="return confirm('You sure you want to delete this question?');"} )
+                    </td>
                 </tr>
             }
         </table>

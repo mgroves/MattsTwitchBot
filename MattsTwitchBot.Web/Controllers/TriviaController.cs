@@ -101,5 +101,16 @@ namespace MattsTwitchBot.Web.Controllers
 
             return View(model);
         }
+
+        [BearerToken]
+        [HttpGet]
+        [Route("/trivia/delete/{id}")]
+        public async Task<IActionResult> DeleteTriviaQuestion(string id)
+        {
+            var deleteTriviaQuestion = new DeleteTriviaQuestion(id);
+            await _mediator.Send(deleteTriviaQuestion);
+            return RedirectToAction("ManageTriviaQuestions");
+        }
+
     }
 }
