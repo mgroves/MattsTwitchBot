@@ -18,6 +18,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
         {
             await _bucket.UpsertAsync("homePageInfo", request.HomePageInfo);
             await _bucket.UpsertAsync("staticContentCommands", request.StaticCommandInfo);
+            await _bucket.UpsertAsync("triviaMessages", request.TriviaMessages);
             return default;
         }
     }

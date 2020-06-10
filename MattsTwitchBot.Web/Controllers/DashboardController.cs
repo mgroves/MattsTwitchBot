@@ -35,15 +35,15 @@ namespace MattsTwitchBot.Web.Controllers
         [Route("/dashboard")]
         [BearerToken]
         [HttpPost]
-        public async Task<IActionResult> DashboardPost(string homePageInfo, string staticContentCommands)
+        public async Task<IActionResult> DashboardPost(string homePageInfo, string staticContentCommands, string triviaMessages)
         {
-            // TODO: validate if either string is actually valid
-
             // sanity check validation on the JSON
             if(!homePageInfo.IsSaneJsonForType<HomePageInfo>())
                 ModelState.AddModelError("homePageInfoJson", "That doesn't look like valid JSON for Home Page Stuff");
             if (!staticContentCommands.IsSaneJsonForType<ValidStaticCommands>())
                 ModelState.AddModelError("staticContentCommandsJson", "That doesn't look like valid JSON for Static Content Commands");
+            if (!triviaMessages.IsSaneJsonForType<TriviaMessages>())
+                ModelState.AddModelError("triviaMessagesJson", "That doesn't look like valid JSON for Trivia Messages");
 
             // TODO: could also do strict validation checks (i.e. badges is required, commands is required, etc)
 
@@ -52,14 +52,15 @@ namespace MattsTwitchBot.Web.Controllers
                 var dashboard = await _mediator.Send(new GetDashboardView());
                 var model = new DashboardViewModel();
                 model.Map(dashboard);
-                model.HomePageInfoJson = homePageInfo;
-                model.StaticContentCommandsJson = staticContentCommands;
+                // model.HomePageInfoJson = homePageInfo;
+                // model.StaticContentCommandsJson = staticContentCommands;
                 return View("Dashboard", model);
             }
 
             var cmd = new SaveDashboardData(
                 JsonConvert.DeserializeObject<HomePageInfo>(homePageInfo),
-                JsonConvert.DeserializeObject<ValidStaticCommands>(staticContentCommands)
+                JsonConvert.DeserializeObject<ValidStaticCommands>(staticContentCommands),
+                JsonConvert.DeserializeObject<TriviaMessages>(triviaMessages)
             );
             await _mediator.Send(cmd);
 

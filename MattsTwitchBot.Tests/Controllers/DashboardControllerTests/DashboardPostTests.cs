@@ -20,6 +20,7 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
         private DashboardController _controller;
         private const string MinimumValidBadgesJson = "{\"Badges\": []}";
         private const string MinimumValidCommandJson = "{ \"Commands\" : [] }";
+        private const string MinimumValidTriviaMessagesJson = "{ \"Messages\" : [] }";
 
         [SetUp]
         public void Setup()
@@ -34,7 +35,7 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
             // arrange
 
             // act
-            await _controller.DashboardPost(MinimumValidBadgesJson, MinimumValidCommandJson);
+            await _controller.DashboardPost(MinimumValidBadgesJson, MinimumValidCommandJson, MinimumValidTriviaMessagesJson);
 
             // assert
             _mockMediator.Verify(m => m.Send(
@@ -48,11 +49,13 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
             // arrange
             var homePageInfo = new HomePageInfo {Badges = new List<SocialMediaBadge> { new SocialMediaBadge { Icon = "twumblr", Text = "mgroves"}}};
             var staticContentCommands = new ValidStaticCommands {  Commands = new List<StaticCommandInfo> { new StaticCommandInfo { Command = "defend", Content = "defend the channel against invaders!"} } };
+            var triviaMessages = new TriviaMessages {Messages = new List<string> { "hey what's up" }};
             var homePageInfoJson = JsonConvert.SerializeObject(homePageInfo);
             var staticContentCommandsJson = JsonConvert.SerializeObject(staticContentCommands);
+            var triviaMessagesJson = JsonConvert.SerializeObject(triviaMessages);
 
             // act
-            await _controller.DashboardPost(homePageInfoJson, staticContentCommandsJson);
+            await _controller.DashboardPost(homePageInfoJson, staticContentCommandsJson, triviaMessagesJson);
 
             // assert
             _mockMediator.Verify(m => m.Send(
@@ -63,15 +66,15 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
                 It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        [TestCase("{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", true, true)]
-        [TestCase(MinimumValidBadgesJson, MinimumValidCommandJson, false, false)]
-        [TestCase("{ \"foo\" : \"bar\" }", MinimumValidCommandJson, true, false)]
-        [TestCase(MinimumValidBadgesJson, "{ \"foo\" : \"bar\" }", false, true)]
-        [TestCase("", "", true, true)]
-        [TestCase(null, "", true, true)]
-        [TestCase("", null, true, true)]
-        [TestCase(null, null, true, true)]
-        public async Task Sanity_check_the_json(string homePageInfojson, string staticContentJson, bool shouldHaveHomePageError, bool shouldHaveStaticContentError)
+        // TODO: this is out of hand, the dashboard should be broken up
+        [TestCase(MinimumValidBadgesJson, MinimumValidCommandJson, "{ \"foo\" : \"bar\" }", false, false, true)]
+        [TestCase(MinimumValidBadgesJson, "{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", false, true, true)]
+        [TestCase("{ \"foo\" : \"bar\" }", MinimumValidCommandJson, MinimumValidTriviaMessagesJson, true, false, false)]
+        [TestCase("{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", MinimumValidTriviaMessagesJson, true, true, false)]
+        [TestCase("{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", true, true, true)]
+        [TestCase("", "", "", true, true, true)]
+        [TestCase(null, "", "", true, true, true)]
+        public async Task Sanity_check_the_json(string homePageInfojson, string staticContentJson, string triviaMessagesJson, bool shouldHaveHomePageError, bool shouldHaveStaticContentError, bool shouldHaveTriviaMessagesError)
         {
             // arrange - this is valid JSON but it is NOT what I want to accept
             // arrange mediator command to reload dashboard
@@ -79,10 +82,10 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
                 .ReturnsAsync(new DashboardView());
 
             // act
-            var result = await _controller.DashboardPost(homePageInfojson, staticContentJson);
+            var result = await _controller.DashboardPost(homePageInfojson, staticContentJson, triviaMessagesJson);
 
             // assert - if everything is valid, controller will redirect
-            if (!shouldHaveHomePageError && !shouldHaveStaticContentError)
+            if (!shouldHaveHomePageError && !shouldHaveStaticContentError && !shouldHaveTriviaMessagesError)
             {
                 Assert.That(result, Is.TypeOf<RedirectToActionResult>());
                 return;
@@ -96,6 +99,7 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
             Assert.That(_controller.ModelState.Count, Is.GreaterThan(0));
             Assert.That(modelState.Keys.Contains("homePageInfoJson"), Is.EqualTo(shouldHaveHomePageError));
             Assert.That(modelState.Keys.Contains("staticContentCommandsJson"), Is.EqualTo(shouldHaveStaticContentError));
+            Assert.That(modelState.Keys.Contains("triviaMessagesJson"), Is.EqualTo(shouldHaveTriviaMessagesError));
         }
     }
 }

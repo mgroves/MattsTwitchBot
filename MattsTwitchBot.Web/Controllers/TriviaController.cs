@@ -30,15 +30,16 @@ namespace MattsTwitchBot.Web.Controllers
         [BearerToken]
         public async Task<IActionResult> GetRandomTriviaQuestions()
         {
-            var resp = await _mediator.Send(new GetRandomTriviaQuestions());
-            var viewModel = new TriviaQuestionViewModel {Questions = resp};
+            var questions = await _mediator.Send(new GetRandomTriviaQuestions());
+            var msg = await _mediator.Send(new GetPreShowMessages());
+            var viewModel = new TriviaQuestionViewModel {Questions = questions, Messages = msg?.Messages };
             return Ok(viewModel);
         }
 
         [Authorize]
         [HttpGet]
         [Route("/trivia/submit")]
-        public async Task<IActionResult> SubmitTriviaQuestion()
+        public IActionResult SubmitTriviaQuestion()
         {
             return View(new TriviaQuestionEditModel());
         }
