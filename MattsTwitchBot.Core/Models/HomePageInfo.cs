@@ -5,6 +5,8 @@ namespace MattsTwitchBot.Core.Models
     public class HomePageInfo
     {
         public List<SocialMediaBadge> Badges { get; set; }
+        public List<string> TickerMessages { get; set; }
+
     }
 
     public class SocialMediaBadge

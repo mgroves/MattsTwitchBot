@@ -25,10 +25,10 @@ namespace MattsTwitchBot.Web.Controllers
         public async Task<IActionResult> Dashboard()
         {
             var dashboard = await _mediator.Send(new GetDashboardView());
-
+            
             var model = new DashboardViewModel();
             model.Map(dashboard);
-
+            
             return View(model);
         }
 
@@ -52,8 +52,6 @@ namespace MattsTwitchBot.Web.Controllers
                 var dashboard = await _mediator.Send(new GetDashboardView());
                 var model = new DashboardViewModel();
                 model.Map(dashboard);
-                // model.HomePageInfoJson = homePageInfo;
-                // model.StaticContentCommandsJson = staticContentCommands;
                 return View("Dashboard", model);
             }
 

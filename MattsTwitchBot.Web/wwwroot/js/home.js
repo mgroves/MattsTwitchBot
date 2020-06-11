@@ -1,15 +1,28 @@
-﻿import { SocialMediaFlyIn } from './modules/SocialMediaFlyIn.js'
+﻿import { SocialMediaFlyIn } from './modules/SocialMediaFlyIn.js';
+import { Ticker } from './modules/Ticker.js';
 
 window.testFlyin = function () {
     SocialMediaFlyIn();
 }
 
-function loop() {
+window.testTicker = function() {
+    Ticker();
+}
+
+function loopSocialMedia() {
     setTimeout(function() {
         SocialMediaFlyIn();
-        loop();
+        loopSocialMedia();
     }, 600000);
 };
 
+function loopTicker() {
+    setTimeout(function () {
+        Ticker();
+        loopTicker();
+    }, 700000);
+}
+
 SocialMediaFlyIn();
-loop();
+loopSocialMedia();
+loopTicker();
