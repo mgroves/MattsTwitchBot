@@ -1,7 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Couchbase;
-using Couchbase.Core;
 using MattsTwitchBot.Core.Models;
 using MediatR;
 
@@ -9,26 +7,25 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
 {
     public class CreateProfileIfNotExistsHandler : IRequestHandler<CreateProfileIfNotExists>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
 
         public CreateProfileIfNotExistsHandler(ITwitchBucketProvider bucketProvider)
         {
-            _bucket = bucketProvider.GetBucket();
+            _bucketProvider = bucketProvider;
         }
 
         public async Task<Unit> Handle(CreateProfileIfNotExists request, CancellationToken cancellationToken)
         {
-            var doesProfileExist = await _bucket.ExistsAsync(request.TwitchUsername);
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
 
-            if (doesProfileExist)
+            var doesProfileExistResult = await collection.ExistsAsync(request.TwitchUsername);
+
+            if (doesProfileExistResult.Exists)
                 return default;
 
             // create a barebones profile
-            await _bucket.UpsertAsync(new Document<TwitcherProfile>
-            {
-                Id = request.TwitchUsername,
-                Content = new TwitcherProfile { }
-            });
+            await collection.UpsertAsync(request.TwitchUsername, new TwitcherProfile { });
 
             return default;
         }

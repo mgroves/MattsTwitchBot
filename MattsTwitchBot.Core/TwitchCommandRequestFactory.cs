@@ -22,10 +22,14 @@ namespace MattsTwitchBot.Core
 
         public async Task<IRequest> BuildCommand(ChatMessage chatMessage)
         {
-            // check for "!" right away, if no "!" then just go
-            // directly to StoreMessage
+            // check for "!" or other important tokens right away, and just go
+            // directly to StoreMessage if there isn't one
             var messageText = chatMessage.Message;
-            if(!messageText.StartsWith("!"))
+
+            if (CouchbaseStatement.IsCouchMentioned(messageText))
+                return new CouchbaseStatement(chatMessage);
+
+            if (!messageText.StartsWith("!"))
                 return new StoreMessage(chatMessage);
 
             switch (messageText)

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase;
-using Couchbase.Core;
+using Couchbase.KeyValue;
 using MattsTwitchBot.Core.Models;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
@@ -15,26 +14,29 @@ namespace MattsTwitchBot.Core.RequestHandlers.Main
     // and the idea would be to welcome that user (if their profile has any welcome farfare defined)
     public class UserHasArrivedHandler : IRequestHandler<UserHasArrived>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
         private readonly IHubContext<ChatWebPageHub, IChatWebPageHub> _hub;
 
-        public UserHasArrivedHandler(ITwitchBucketProvider twitchBucketProvider, IHubContext<ChatWebPageHub, IChatWebPageHub> hub)
+        public UserHasArrivedHandler(ITwitchBucketProvider bucketProvider, IHubContext<ChatWebPageHub, IChatWebPageHub> hub)
         {
+            _bucketProvider = bucketProvider;
             _hub = hub;
-            _bucket = twitchBucketProvider.GetBucket();
         }
 
         public async Task<Unit> Handle(UserHasArrived request, CancellationToken cancellationToken)
         {
-            var hasUserArrivedRecently = await CheckIfUserHasArrivedRecently(request.Message.Username);
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
+
+            var hasUserArrivedRecently = await CheckIfUserHasArrivedRecently(request.Message.Username, collection);
 
             // if the user HAS been around recently, then bail out, no need to send fanfare
             if (hasUserArrivedRecently)
                 return default;
 
-            await CreateUserArrivedRecentlyData(request.Message.Username);
+            await CreateUserArrivedRecentlyData(request.Message.Username, collection);
 
-            var profile = await GetUserProfile(request.Message.Username);
+            var profile = await GetUserProfile(request.Message.Username, collection);
 
             // if there is no profile, then there can be no fanfare
             if (profile == null)
@@ -48,30 +50,29 @@ namespace MattsTwitchBot.Core.RequestHandlers.Main
         }
 
         // get their profile
-        private async Task<TwitcherProfile> GetUserProfile(string username)
+        private async Task<TwitcherProfile> GetUserProfile(string username, ICouchbaseCollection collection)
         {
-            var result = await _bucket.GetAsync<TwitcherProfile>(username.ToLower());
-            return result.Value;
+            var result = await collection.GetAsync(username.ToLower());
+            return result.ContentAs<TwitcherProfile>();
         }
 
         // create an arrive_recently with a TTL of like... 12 hours
-        private async Task CreateUserArrivedRecentlyData(string username)
+        private async Task CreateUserArrivedRecentlyData(string username, ICouchbaseCollection collection)
         {
-            var doc = new Document<dynamic>
+            var id = $"{username}::arrived_recently";
+            var content = new
             {
-                Id = $"{username}::arrived_recently",
-                Content = new {
-                    Message = $"{username} arrived: " + DateTime.Now
-                },
-                Expiry = 12 * 60 * 60 * 1000 // 12 hours
+                Message = $"{username} arrived: " + DateTime.Now
             };
-            await _bucket.UpsertAsync(doc);
+            await collection.UpsertAsync(id, content, 
+                options => options.Expiry(new TimeSpan(12,0,0)));
         }
 
         // check to see if user arrived_recently document exists
-        private async Task<bool> CheckIfUserHasArrivedRecently(string username)
+        private async Task<bool> CheckIfUserHasArrivedRecently(string username, ICouchbaseCollection collection)
         {
-            return await _bucket.ExistsAsync($"{username}::arrived_recently");
+            var result = await collection.ExistsAsync($"{username}::arrived_recently");
+            return result.Exists;
         }
     }
 }

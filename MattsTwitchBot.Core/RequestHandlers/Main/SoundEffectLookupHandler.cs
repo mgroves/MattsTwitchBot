@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
 using MattsTwitchBot.Core.Models;
 using MediatR;
 
@@ -8,19 +7,27 @@ namespace MattsTwitchBot.Core.RequestHandlers.Main
 {
     public class SoundEffectLookupHandler : IRequestHandler<SoundEffectLookup, ValidSoundEffects>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
 
         public SoundEffectLookupHandler(ITwitchBucketProvider bucketProvider)
         {
-            _bucket = bucketProvider.GetBucket();
+            _bucketProvider = bucketProvider;
         }
 
         public async Task<ValidSoundEffects> Handle(SoundEffectLookup request, CancellationToken cancellationToken)
         {
-            var soundEffectResult = await _bucket.GetAsync<ValidSoundEffects>("validSoundEffects");
-            if(!soundEffectResult.Success)
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
+
+            try
+            {
+                var soundEffectResult = await collection.GetAsync("validSoundEffects");
+                return soundEffectResult.ContentAs<ValidSoundEffects>();
+            }
+            catch
+            {
                 return new ValidSoundEffects();
-            return soundEffectResult.Value;
+            }
         }
     }
 }

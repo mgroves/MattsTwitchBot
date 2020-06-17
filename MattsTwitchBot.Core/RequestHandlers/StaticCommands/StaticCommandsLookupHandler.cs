@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
 using MattsTwitchBot.Core.Models;
 using MediatR;
 
@@ -8,19 +7,27 @@ namespace MattsTwitchBot.Core.RequestHandlers.StaticCommands
 {
     public class StaticCommandsLookupHandler : IRequestHandler<StaticCommandsLookup, ValidStaticCommands>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
 
         public StaticCommandsLookupHandler(ITwitchBucketProvider bucketProvider)
         {
-            _bucket = bucketProvider.GetBucket();
+            _bucketProvider = bucketProvider;
         }
 
         public async Task<ValidStaticCommands> Handle(StaticCommandsLookup request, CancellationToken cancellationToken)
         {
-            var result = await _bucket.GetAsync<ValidStaticCommands>("staticContentCommands");
-            if(!result.Success)
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
+
+            try
+            {
+                var result = await collection.GetAsync("staticContentCommands");
+                return result.ContentAs<ValidStaticCommands>();
+            }
+            catch
+            {
                 return new ValidStaticCommands();
-            return result.Value;
+            }
         }
     }
 }

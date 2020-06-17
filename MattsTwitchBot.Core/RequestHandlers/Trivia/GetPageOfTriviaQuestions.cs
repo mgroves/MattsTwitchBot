@@ -4,7 +4,7 @@ using MediatR;
 
 namespace MattsTwitchBot.Core.RequestHandlers.Trivia
 {
-    public class GetPageOfTriviaQuestions : IRequest<List<TriviaQuestion>>
+    public class GetPageOfTriviaQuestions : IRequest<IAsyncEnumerable<TriviaQuestion>>
     {
         public int PageNum { get; }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core.RequestHandlers;
 using MattsTwitchBot.Core.RequestHandlers.Trivia;
@@ -32,7 +33,11 @@ namespace MattsTwitchBot.Web.Controllers
         {
             var questions = await _mediator.Send(new GetRandomTriviaQuestions());
             var msg = await _mediator.Send(new GetPreShowMessages());
-            var viewModel = new TriviaQuestionViewModel {Questions = questions, Messages = msg?.Messages };
+            var viewModel = new TriviaQuestionViewModel
+            {
+                Questions = await questions.ToListAsync(),
+                Messages = msg?.Messages
+            };
             return Ok(viewModel);
         }
 
@@ -70,7 +75,12 @@ namespace MattsTwitchBot.Web.Controllers
         {
             var respNumPages = await _mediator.Send(new GetTotalNumberOfTriviaPages());
             var respQuestions = await _mediator.Send(new GetPageOfTriviaQuestions(pageNum));
-            var viewModel = new ManageTriviaQuestionsViewModel { Questions = respQuestions, CurrentPageNum = pageNum, TotalPages = respNumPages };
+            var viewModel = new ManageTriviaQuestionsViewModel
+            {
+                Questions = await respQuestions.ToListAsync(),
+                CurrentPageNum = pageNum,
+                TotalPages = respNumPages
+            };
             return View(viewModel);
         }
 

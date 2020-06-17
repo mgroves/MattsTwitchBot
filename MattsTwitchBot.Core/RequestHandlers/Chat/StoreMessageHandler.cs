@@ -1,31 +1,27 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase;
-using Couchbase.Core;
 using MediatR;
-using TwitchLib.Client.Models;
 
 namespace MattsTwitchBot.Core.RequestHandlers.Chat
 {
     public class StoreMessageHandler : IRequestHandler<StoreMessage>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
 
-        public StoreMessageHandler(ITwitchBucketProvider twitchBucketProvider)
+        public StoreMessageHandler(ITwitchBucketProvider bucketProvider)
         {
-            _bucket = twitchBucketProvider.GetBucket();
+            _bucketProvider = bucketProvider;
         }
 
         public async Task<Unit> Handle(StoreMessage request, CancellationToken cancellationToken)
         {
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
+
             var message = request.Message;
-            await _bucket.InsertAsync(new Document<ChatMessage>
-            {
-                Id = Guid.NewGuid().ToString(),
-                Content = message
-            });
-            return Unit.Value;
+            await collection.InsertAsync(Guid.NewGuid().ToString(), message);
+            return default;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
 using MattsTwitchBot.Core.Models;
 using MediatR;
 
@@ -8,24 +7,27 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
 {
     public class GetHomePageInfoHandler : IRequestHandler<GetHomePageInfo, HomePageInfo>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
 
         public GetHomePageInfoHandler(ITwitchBucketProvider bucketProvider)
         {
-            _bucket = bucketProvider.GetBucket();
+            _bucketProvider = bucketProvider;
         }
 
         public async Task<HomePageInfo> Handle(GetHomePageInfo request, CancellationToken cancellationToken)
         {
-            var homePageInfoExists = await _bucket.ExistsAsync("homePageInfo");
-            if(!homePageInfoExists)
-                return new HomePageInfo();
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
 
-            var result = await _bucket.GetAsync<HomePageInfo>("homePageInfo");
-            if(!result.Success)
+            try
+            {
+                var result = await collection.GetAsync("homePageInfo");
+                return result.ContentAs<HomePageInfo>();
+            }
+            catch
+            {
                 return new HomePageInfo();
-
-            return result.Value;
+            }
         }
     }
 }

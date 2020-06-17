@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Couchbase;
-using Couchbase.Core;
+using Couchbase.KeyValue;
 using MattsTwitchBot.Core.Models;
 using MediatR;
 using TwitchLib.Client.Models;
@@ -10,23 +9,26 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
 {
     public class ModifyProfileHandler : IRequestHandler<ModifyProfile>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
 
         public ModifyProfileHandler(ITwitchBucketProvider bucketProvider)
         {
-            _bucket = bucketProvider.GetBucket();
+            _bucketProvider = bucketProvider;
         }
 
         public async Task<Unit> Handle(ModifyProfile request, CancellationToken cancellationToken)
         {
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
+
             var chatMessage = request.Message;
 
-            if (!await UserExists(chatMessage.Username))
-                await CreateUserProfile(chatMessage);
+            if (!await UserExists(chatMessage.Username, collection))
+                await CreateUserProfile(chatMessage, collection);
 
             // update individual profile properties
             if (chatMessage.Message.StartsWith("!profile-shout"))
-                await UpdateProperty(chatMessage.Username, "shoutMessage", GetShoutMessage(chatMessage));
+                await UpdateProperty(chatMessage.Username, "shoutMessage", GetShoutMessage(chatMessage), collection);
 
             return default;
         }
@@ -38,26 +40,21 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
                 .Trim(); // trim any extra space
         }
 
-        private async Task UpdateProperty<T>(string key, string property, T value)
+        private async Task UpdateProperty<T>(string key, string property, T value, ICouchbaseCollection collection)
         {
-            await _bucket.MutateIn<dynamic>(key.ToLower())
-                .Upsert(property, value)
-                .ExecuteAsync();
+            await collection.MutateInAsync(key.ToLower(), 
+                builder => builder.Upsert(property, value));
         }
 
-        private async Task CreateUserProfile(ChatMessage chatMessage)
+        private async Task CreateUserProfile(ChatMessage chatMessage, ICouchbaseCollection collection)
         {
-            var doc = new Document<TwitcherProfile>
-            {
-                Id = chatMessage.Username,
-                Content = new TwitcherProfile()
-            };
-            await _bucket.InsertAsync(doc);
+            await collection.InsertAsync(chatMessage.Username, new TwitcherProfile());
         }
 
-        private async Task<bool> UserExists(string username)
+        private async Task<bool> UserExists(string username, ICouchbaseCollection collection)
         {
-            return await _bucket.ExistsAsync(username);
+            var result = await collection.ExistsAsync(username);
+            return result.Exists;
         }
     }
 }

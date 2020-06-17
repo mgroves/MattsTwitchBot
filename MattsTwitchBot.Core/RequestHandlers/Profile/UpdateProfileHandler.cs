@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
 using MattsTwitchBot.Core.Models;
 using MediatR;
 
@@ -8,11 +7,11 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
 {
     public class UpdateProfileHandler : IRequestHandler<UpdateProfile>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
 
-        public UpdateProfileHandler(ITwitchBucketProvider twitchBucketProvider)
+        public UpdateProfileHandler(ITwitchBucketProvider bucketProvider)
         {
-            _bucket = twitchBucketProvider.GetBucket();
+            _bucketProvider = bucketProvider;
         }
 
         public async Task<Unit> Handle(UpdateProfile request, CancellationToken cancellationToken)
@@ -28,7 +27,10 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
             profile.Fanfare.YouTubeEndTime = request.FanfareYouTubeEndTime;
             profile.Fanfare.YouTubeCode = request.FanfareYouTubeCode;
 
-            await _bucket.UpsertAsync(request.TwitchUsername, profile);
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
+
+            await collection.UpsertAsync(request.TwitchUsername, profile);
             return default;
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
 using MattsTwitchBot.Core.Models;
 using MediatR;
 
@@ -9,11 +8,11 @@ namespace MattsTwitchBot.Core.RequestHandlers.Trivia
 {
     public class SubmitTriviaQuestionHandler : IRequestHandler<SubmitTriviaQuestion>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
 
         public SubmitTriviaQuestionHandler(ITwitchBucketProvider bucketProvider)
         {
-            _bucket = bucketProvider.GetBucket();
+            _bucketProvider = bucketProvider;
         }
 
         public async Task<Unit> Handle(SubmitTriviaQuestion request, CancellationToken cancellationToken)
@@ -29,7 +28,10 @@ namespace MattsTwitchBot.Core.RequestHandlers.Trivia
             if (string.IsNullOrEmpty(id))
                 id = Guid.NewGuid().ToString();
 
-            await _bucket.UpsertAsync(id, trivia);
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
+
+            await collection.UpsertAsync(id, trivia);
 
             return default;
         }

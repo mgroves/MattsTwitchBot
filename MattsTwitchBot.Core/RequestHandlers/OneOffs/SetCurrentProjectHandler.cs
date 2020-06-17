@@ -12,14 +12,14 @@ namespace MattsTwitchBot.Core.RequestHandlers.OneOffs
     public class SetCurrentProjectHandler : IRequestHandler<SetCurrentProject>
     {
         private readonly ITwitchClient _twitchClient;
+        private readonly ITwitchBucketProvider _bucketProvider;
         private readonly IOptions<TwitchOptions> _twitchOptions;
-        private readonly IBucket _bucket;
 
-        public SetCurrentProjectHandler(ITwitchClient twitchClient, ITwitchBucketProvider twitchBucketProvider, IOptions<TwitchOptions> twitchOptions)
+        public SetCurrentProjectHandler(ITwitchClient twitchClient, ITwitchBucketProvider bucketProvider, IOptions<TwitchOptions> twitchOptions)
         {
             _twitchClient = twitchClient;
+            _bucketProvider = bucketProvider;
             _twitchOptions = twitchOptions;
-            _bucket = twitchBucketProvider.GetBucket();
         }
 
         public async Task<Unit> Handle(SetCurrentProject request, CancellationToken cancellationToken)
@@ -39,17 +39,23 @@ namespace MattsTwitchBot.Core.RequestHandlers.OneOffs
                 return Unit.Value;
             }
 
-            // store the current project info
-            var currentProjectDocumentKey = "currentProject";
-            var info = new CurrentProjectInfo();
-            info.Url = uri;
+            try
+            {
+                // store the current project info
+                var currentProjectDocumentKey = "currentProject";
+                var info = new CurrentProjectInfo();
+                info.Url = uri;
 
-            var result = await _bucket.UpsertAsync(currentProjectDocumentKey, info);
-            if (result == null || !result.Success)
-                _twitchClient.SendMessage(message.Channel, "I was unable to store that, sorry!");
-            else
+                var bucket = await _bucketProvider.GetBucketAsync();
+                var collection = bucket.DefaultCollection();
+                await collection.UpsertAsync(currentProjectDocumentKey, info);
                 _twitchClient.SendMessage(message.Channel, "Okay, got it!");
-            return Unit.Value;
+            }
+            catch
+            {
+                _twitchClient.SendMessage(message.Channel, "I was unable to store that, sorry!");
+            }
+            return default;
         }
     }
 }

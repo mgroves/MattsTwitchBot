@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
 using MattsTwitchBot.Core.Models;
 using MediatR;
 using TwitchLib.Client.Interfaces;
@@ -10,12 +9,12 @@ namespace MattsTwitchBot.Core.RequestHandlers.StaticCommands
 {
     public class StaticMessageHandler : IRequestHandler<StaticMessage>
     {
-        private readonly IBucket _bucket;
+        private readonly ITwitchBucketProvider _bucketProvider;
         private readonly ITwitchClient _twitchClient;
 
         public StaticMessageHandler(ITwitchBucketProvider bucketProvider, ITwitchClient twitchClient)
         {
-            _bucket = bucketProvider.GetBucket();
+            _bucketProvider = bucketProvider;
             _twitchClient = twitchClient;
         }
 
@@ -24,8 +23,10 @@ namespace MattsTwitchBot.Core.RequestHandlers.StaticCommands
             // assumes that the request is valid
 
             // look up the content
-            var result = await _bucket.GetAsync<ValidStaticCommands>("staticContentCommands");
-            var contents = result.Value;
+            var bucket = await _bucketProvider.GetBucketAsync();
+            var collection = bucket.DefaultCollection();
+            var result = await collection.GetAsync("staticContentCommands");
+            var contents = result.ContentAs<ValidStaticCommands>();
             var command = contents.Commands.First(c => c.Command == request.Command);
 
             // write the content to the chat room
