@@ -3,33 +3,26 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.RequestHandlers;
 using MattsTwitchBot.Core.RequestHandlers.Chat;
 using MattsTwitchBot.Core.RequestHandlers.StaticCommands;
-using MediatR;
 using Moq;
 using NUnit.Framework;
-using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models.Builders;
 
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class HelpHandlerTests
+    public class HelpHandlerTests : UnitTest
     {
         private HelpHandler _handler;
-        private Mock<ITwitchClient> _mockTwitchClient;
-        private Mock<IMediator> _mockMediator;
         private ValidStaticCommands _fakeStaticCommands;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            _mockTwitchClient = new Mock<ITwitchClient>();
-            _mockMediator = new Mock<IMediator>();
-            _handler = new HelpHandler(_mockTwitchClient.Object, _mockMediator.Object);
+            base.Setup();
+            _handler = new HelpHandler(MockTwitchClient.Object, MockMediator.Object);
 
-            //_mediator.Send<ValidStaticCommands>(new StaticCommandsLookup());
             _fakeStaticCommands = new ValidStaticCommands
             {
                 Commands = new List<StaticCommandInfo>
@@ -39,7 +32,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
                     new StaticCommandInfo {Command = "!baz", Content = "foo content " + Guid.NewGuid()},
                 }
             };
-            _mockMediator.Setup(m => 
+            MockMediator.Setup(m => 
                 m.Send<ValidStaticCommands>(It.IsAny<StaticCommandsLookup>(),It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_fakeStaticCommands);
         }
@@ -62,7 +55,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockTwitchClient.Verify(x => x.SendMessage(expectedChannel,
+            MockTwitchClient.Verify(x => x.SendMessage(expectedChannel,
                 It.Is<string>(s => s.StartsWith("Try these commands:")), false), Times.Once);
         }
 
@@ -87,7 +80,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockTwitchClient.Verify(x => x.SendMessage(expectedChannel,
+            MockTwitchClient.Verify(x => x.SendMessage(expectedChannel,
                 It.Is<string>(s => s.StartsWith(startsWith)), false), Times.Once);
         }
 
@@ -109,7 +102,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockTwitchClient.Verify(x => x.SendMessage(expectedChannel,
+            MockTwitchClient.Verify(x => x.SendMessage(expectedChannel,
                 It.Is<string>(s => s.StartsWith("Try these commands:")), false), Times.Once);
         }
     }

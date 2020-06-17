@@ -20,10 +20,22 @@
 
   <ItemGroup>
     <Compile Include="Core\RequestHandlerTests\CreateProfileIfNotExistsTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\GetHomePageInfoHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\GetProfileHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\GetRandomTriviaQuestionsHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\HelpHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\LurkHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\ModifyProfileHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\SayCurrentProjectHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\SetCurrentProjectHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\ShoutOutTests.cs" />
     <Compile Include="Core\TwitchCommandRequestFactoryTests.cs" />
     <Compile Include="Fakes\FakeConfiguration.cs" />
     <Compile Include="Fakes\FakeConfigurationSection.cs" />
     <Compile Include="Fakes\FakeExistsResult.cs" />
+    <Compile Include="Fakes\FakeGetResult.cs" />
+    <Compile Include="Fakes\FakeMutationResult.cs" />
+    <Compile Include="Fakes\FakeQueryResult.cs" />
   </ItemGroup>
 
   <ItemGroup>

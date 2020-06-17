@@ -43,7 +43,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
         private async Task UpdateProperty<T>(string key, string property, T value, ICouchbaseCollection collection)
         {
             await collection.MutateInAsync(key.ToLower(), 
-                builder => builder.Upsert(property, value));
+                builder => builder.Upsert(property, value), options => { });
         }
 
         private async Task CreateUserProfile(ChatMessage chatMessage, ICouchbaseCollection collection)

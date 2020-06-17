@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MattsTwitchBot.Core.RequestHandlers;
 using MattsTwitchBot.Core.RequestHandlers.OneOffs;
 using Moq;
 using NUnit.Framework;
@@ -11,14 +10,15 @@ using TwitchLib.Client.Models.Builders;
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class LurkHandlerTests
+    public class LurkHandlerTests : UnitTest
     {
         private LurkHandler _handler;
         private Mock<ITwitchClient> _mockTwitchClient;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
+            base.Setup();
             _mockTwitchClient = new Mock<ITwitchClient>();
             _handler = new LurkHandler(_mockTwitchClient.Object);
         }
