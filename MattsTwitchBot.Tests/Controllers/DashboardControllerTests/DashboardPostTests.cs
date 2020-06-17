@@ -18,9 +18,9 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
     {
         private Mock<IMediator> _mockMediator;
         private DashboardController _controller;
-        private const string MinimumValidBadgesJson = "{\"Badges\": []}";
+        private const string MinimumValidBadgesJson = "{\"Badges\": [], \"TickerMessages\": []}";
         private const string MinimumValidCommandJson = "{ \"Commands\" : [] }";
-        private const string MinimumValidTriviaMessagesJson = "{ \"Messages\" : [] }";
+        private const string MinimumValidTriviaMessagesJson = "{ \"Messages\" : [], \"ShowMessages\" : false }";
 
         [SetUp]
         public void Setup()

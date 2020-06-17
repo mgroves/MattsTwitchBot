@@ -43,7 +43,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
             var view = new DashboardView();
             view.HomePageInfo = homePageInfo;
             view.StaticContentCommands = staticContentCommands;
-            view.Profiles = await profiles.ToListAsync(cancellationToken);
+            view.Profiles = profiles == null ? null : await profiles.ToListAsync(cancellationToken);
             view.TriviaMessages = triviaMessages;
             return view;
         }

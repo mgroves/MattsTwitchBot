@@ -7,21 +7,23 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\**" />
     <Compile Remove="Core\**" />
     <Compile Remove="Fakes\**" />
-    <Compile Remove="Filters\**" />
     <Compile Remove="ViewModels\**" />
-    <EmbeddedResource Remove="Controllers\**" />
     <EmbeddedResource Remove="Core\**" />
     <EmbeddedResource Remove="Fakes\**" />
-    <EmbeddedResource Remove="Filters\**" />
     <EmbeddedResource Remove="ViewModels\**" />
-    <None Remove="Controllers\**" />
     <None Remove="Core\**" />
     <None Remove="Fakes\**" />
-    <None Remove="Filters\**" />
     <None Remove="ViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Core\RequestHandlerTests\CreateProfileIfNotExistsTests.cs" />
+    <Compile Include="Core\TwitchCommandRequestFactoryTests.cs" />
+    <Compile Include="Fakes\FakeConfiguration.cs" />
+    <Compile Include="Fakes\FakeConfigurationSection.cs" />
+    <Compile Include="Fakes\FakeExistsResult.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,10 +40,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MattsTwitchBot.Core\MattsTwitchBot.Core.csproj" />
     <ProjectReference Include="..\MattsTwitchBot.Web\MattsTwitchBot.Web.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Integration\" />
   </ItemGroup>
 
 </Project>

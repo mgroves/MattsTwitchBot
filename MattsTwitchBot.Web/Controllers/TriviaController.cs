@@ -35,7 +35,7 @@ namespace MattsTwitchBot.Web.Controllers
             var msg = await _mediator.Send(new GetPreShowMessages());
             var viewModel = new TriviaQuestionViewModel
             {
-                Questions = await questions.ToListAsync(),
+                Questions = questions == null ? null : await questions.ToListAsync(),
                 Messages = msg?.Messages
             };
             return Ok(viewModel);

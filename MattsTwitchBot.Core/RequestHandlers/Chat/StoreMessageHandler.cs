@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 
@@ -8,10 +7,12 @@ namespace MattsTwitchBot.Core.RequestHandlers.Chat
     public class StoreMessageHandler : IRequestHandler<StoreMessage>
     {
         private readonly ITwitchBucketProvider _bucketProvider;
+        private readonly IKeyGenerator _keyGen;
 
-        public StoreMessageHandler(ITwitchBucketProvider bucketProvider)
+        public StoreMessageHandler(ITwitchBucketProvider bucketProvider, IKeyGenerator keyGen)
         {
             _bucketProvider = bucketProvider;
+            _keyGen = keyGen;
         }
 
         public async Task<Unit> Handle(StoreMessage request, CancellationToken cancellationToken)
@@ -20,7 +21,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Chat
             var collection = bucket.DefaultCollection();
 
             var message = request.Message;
-            await collection.InsertAsync(Guid.NewGuid().ToString(), message);
+            await collection.InsertAsync(_keyGen.NewDocKey(), message);
             return default;
         }
     }
