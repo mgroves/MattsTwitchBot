@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
-using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.RequestHandlers;
 using MattsTwitchBot.Core.RequestHandlers.StaticCommands;
 using MattsTwitchBot.Tests.Fakes;
 using Moq;
@@ -14,20 +12,16 @@ using NUnit.Framework;
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class StaticCommandsLookupHandlerTests
+    public class StaticCommandsLookupHandlerTests : UnitTest
     {
         private StaticCommandsLookupHandler _handler;
-        private Mock<ITwitchBucketProvider> _mockBucketProvider;
-        private Mock<IBucket> _mockBucket;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            _mockBucket = new Mock<IBucket>();
-            _mockBucketProvider = new Mock<ITwitchBucketProvider>();
-            _mockBucketProvider.Setup(x => x.GetBucket()).Returns(_mockBucket.Object);
+            base.Setup();
 
-            _handler = new StaticCommandsLookupHandler(_mockBucketProvider.Object);
+            _handler = new StaticCommandsLookupHandler(MockBucketProvider.Object);
         }
 
         [Test]
@@ -35,8 +29,8 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         {
             // arrange
             var request = new StaticCommandsLookup();
-            _mockBucket.Setup(x => x.GetAsync<ValidStaticCommands>("staticContentCommands"))
-                .ReturnsAsync(new FakeOperationResult<ValidStaticCommands> {Success = false});
+            MockCollection.Setup(x => x.GetAsync("staticContentCommands", null))
+                .Throws<Exception>();
 
             // act
             var result = await _handler.Handle(request, CancellationToken.None);
@@ -59,12 +53,12 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
                     new StaticCommandInfo {Command = "foo2", Content = "bar2"},
                 }
             };
-            _mockBucket.Setup(x => x.GetAsync<ValidStaticCommands>("staticContentCommands"))
-                .ReturnsAsync(new FakeOperationResult<ValidStaticCommands> { Success = true, Value = commands});
-
+            MockCollection.Setup(x => x.GetAsync("staticContentCommands", null))
+                .ReturnsAsync(new FakeGetResult(commands));
+        
             // act
             var result = await _handler.Handle(request, CancellationToken.None);
-
+        
             // assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Commands, Is.Not.Null);

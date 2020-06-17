@@ -2,34 +2,24 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
-using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.RequestHandlers;
 using MattsTwitchBot.Core.RequestHandlers.StaticCommands;
 using MattsTwitchBot.Tests.Fakes;
 using Moq;
 using NUnit.Framework;
-using TwitchLib.Client.Interfaces;
 
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class StaticMessageHandlerTests
+    public class StaticMessageHandlerTests : UnitTest
     {
-        private Mock<ITwitchBucketProvider> _mockBucketProvider;
-        private Mock<ITwitchClient> _mockTwitchClient;
-        private Mock<IBucket> _mockBucket;
         private StaticMessageHandler _handler;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            _mockBucket = new Mock<IBucket>();
-            _mockBucketProvider = new Mock<ITwitchBucketProvider>();
-            _mockBucketProvider.Setup(x => x.GetBucket()).Returns(_mockBucket.Object);
-            _mockTwitchClient = new Mock<ITwitchClient>();
-            _handler = new StaticMessageHandler(_mockBucketProvider.Object, _mockTwitchClient.Object);
+            base.Setup();
+            _handler = new StaticMessageHandler(MockBucketProvider.Object, MockTwitchClient.Object);
         }
 
         [Test]
@@ -50,8 +40,8 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
                     }
                 }
             };
-            _mockBucket.Setup(x => x.GetAsync<ValidStaticCommands>("staticContentCommands"))
-                .ReturnsAsync(new FakeOperationResult<ValidStaticCommands> { Value = content});
+            MockCollection.Setup(x => x.GetAsync("staticContentCommands", null))
+                .ReturnsAsync(new FakeGetResult(content));
             var request = new StaticMessage(commandName, channel);
 
             // act
@@ -59,7 +49,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 
             // assert
             // _twitchClient.SendMessage(request.Channel, command.Content);
-            _mockTwitchClient.Verify(x => x.SendMessage(channel,expectedContent, false), Times.Once);
+            MockTwitchClient.Verify(x => x.SendMessage(channel,expectedContent, false), Times.Once);
         }
     }
 }

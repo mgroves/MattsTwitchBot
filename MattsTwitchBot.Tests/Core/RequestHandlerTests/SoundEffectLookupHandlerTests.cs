@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
-using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.RequestHandlers;
 using MattsTwitchBot.Core.RequestHandlers.Main;
 using MattsTwitchBot.Tests.Fakes;
 using Moq;
@@ -15,19 +12,15 @@ using NUnit.Framework;
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class SoundEffectLookupHandlerTests
+    public class SoundEffectLookupHandlerTests : UnitTest
     {
         private SoundEffectLookupHandler _handler;
-        private Mock<ITwitchBucketProvider> _mockBucketProvider;
-        private Mock<IBucket> _mockBucket;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            _mockBucket = new Mock<IBucket>();
-            _mockBucketProvider = new Mock<ITwitchBucketProvider>();
-            _mockBucketProvider.Setup(x => x.GetBucket()).Returns(_mockBucket.Object);
-            _handler = new SoundEffectLookupHandler(_mockBucketProvider.Object);
+            base.Setup();
+            _handler = new SoundEffectLookupHandler(MockBucketProvider.Object);
         }
 
         [Test]
@@ -35,8 +28,8 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         {
             // arrange
             var request = new SoundEffectLookup();
-            _mockBucket.Setup(x => x.GetAsync<ValidSoundEffects>("validSoundEffects"))
-                .ReturnsAsync(new FakeOperationResult<ValidSoundEffects> {Success = false});
+            MockCollection.Setup(x => x.GetAsync("validSoundEffects", null))
+                .Throws<Exception>();
 
             // act
             var result = await _handler.Handle(request, CancellationToken.None);
@@ -60,12 +53,12 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
                 }
             };
             var request = new SoundEffectLookup();
-            _mockBucket.Setup(x => x.GetAsync<ValidSoundEffects>("validSoundEffects"))
-                .ReturnsAsync(new FakeOperationResult<ValidSoundEffects> { Success = true, Value = validSoundEffects });
-
+            MockCollection.Setup(x => x.GetAsync("validSoundEffects", null))
+                .ReturnsAsync(new FakeGetResult(validSoundEffects));
+        
             // act
             var result = await _handler.Handle(request, CancellationToken.None);
-
+        
             // assert
             Assert.That(result.SoundEffects, Is.Not.Null);
             Assert.That(result.SoundEffects, Is.Not.Empty);
