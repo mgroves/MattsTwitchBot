@@ -15,7 +15,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.RequestHandlers.DashboardTests
         private GetHomePageInfoHandler _handler;
 
         [SetUp]
-        public virtual async Task Setup()
+        public override async Task Setup()
         {
             await base.Setup();
             _handler = new GetHomePageInfoHandler(BucketProvider);

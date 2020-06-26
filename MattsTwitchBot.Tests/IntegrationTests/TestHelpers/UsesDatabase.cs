@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Couchbase;
 using Couchbase.KeyValue;
-using Couchbase.Management.Buckets;
-using Couchbase.Management.Query;
 using MattsTwitchBot.Core;
 using NUnit.Framework;
 
@@ -26,29 +24,19 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
         protected IKeyGenerator TestKeyGen;
 
         [SetUp]
-        public async Task Setup()
+        public virtual async Task Setup()
         {
             var connectionString = Environment.GetEnvironmentVariable("COUCHBASE_CONNECTION_STRING") ?? "couchbase://localhost";
             var username = Environment.GetEnvironmentVariable("COUCHBASE_USERNAME") ?? "Administrator";
             var password = Environment.GetEnvironmentVariable("COUCHBASE_PASSWORD") ?? "password";
             var bucketName = Environment.GetEnvironmentVariable("COUCHBASE_BUCKET_NAME") ?? "tests";
             TestCluster = await Cluster.ConnectAsync(connectionString, username, password);
-            try
-            {
-                await TestCluster.Buckets.CreateBucketAsync(new BucketSettings
-                {
-                    Name = bucketName,
-                    BucketType = BucketType.Couchbase,
-                    FlushEnabled = true,
-                    RamQuotaMB = 100
-                });
 
-                await TestCluster.QueryIndexes.CreatePrimaryIndexAsync(bucketName);
-            }
-            catch
-            {
-                // assume bucket is already created
-            }
+            // from this point on, any test using this base class assumes:
+            // - that a bucket with name in bucketName exists
+            // - that a primary index in that bucket exists
+            // Locally, you'll need to make sure this is setup manually
+            // Also see the .github folder for how this is setup for Github Actions CI/CD
 
             Bucket = await TestCluster.BucketAsync(bucketName);
             Collection = Bucket.DefaultCollection();
@@ -68,7 +56,19 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
         [TearDown]
         public async Task Teardown()
         {
-            DocumentsToRemove.ForEach(async key => await Collection.RemoveAsync(key));
+            DocumentsToRemove.ForEach(async key =>
+            {
+                try
+                {
+                    await Collection.RemoveAsync(key);
+                }
+                catch
+                {
+                    // if there's an exception throw because that key doesn't exist
+                    // that's fine, but there many be others in DocumentsToRemove
+                    // so that's why this exception is being swallowed
+                }
+            });
             await TestCluster.DisposeAsync();
         }
     }

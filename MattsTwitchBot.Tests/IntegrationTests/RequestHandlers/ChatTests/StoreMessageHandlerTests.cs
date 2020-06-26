@@ -18,7 +18,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.RequestHandlers.ChatTests
         private StoreMessageHandler _handler;
 
         [SetUp]
-        public virtual async Task Setup()
+        public override async Task Setup()
         {
             await base.Setup();
             _handler = new StoreMessageHandler(BucketProvider, TestKeyGen);

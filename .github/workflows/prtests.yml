@@ -19,11 +19,21 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.101
+    - name: Run CouchbaseFakeIt
+      uses: brantburnett/run-couchbasefakeit@v0.1
+      with:
+        couchbase-version: enterprise-6.5.0
+        couchbase-configuration: couchbase # Refers to the couchbase folder
     - name: Install dependencies
       run: dotnet restore MattsTwitchBot.Web
-    - name: Build and Publish
+    - name: Build and Publish  # not sure if I need this step just for testing
       run: |
         dotnet build MattsTwitchBot.Web --configuration Release --no-restore
         dotnet publish MattsTwitchBot.Web -c Release -o ./myapp 
     - name: Test
-      run: dotnet test MattsTwitchBot.Tests --no-restore --verbosity normal
+      run: dotnet test MattsTwitchBot.Tests --verbosity normal
+      env:
+        COUCHBASE_CONNECTION_STRING: couchbase://localhost
+        COUCHBASE_USERNAME: Administrator
+        COUCHBASE_PASSWORD: password
+        COUCHBASE_BUCKET_NAME: testbucket
