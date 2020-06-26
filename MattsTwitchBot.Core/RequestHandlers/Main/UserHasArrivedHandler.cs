@@ -52,15 +52,22 @@ namespace MattsTwitchBot.Core.RequestHandlers.Main
         // get their profile
         private async Task<TwitcherProfile> GetUserProfile(string username, ICouchbaseCollection collection)
         {
-            var result = await collection.GetAsync(username.ToLower());
-            return result.ContentAs<TwitcherProfile>();
+            try
+            {
+                var result = await collection.GetAsync(username.ToLower());
+                return result.ContentAs<TwitcherProfile>();
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         // create an arrive_recently with a TTL of like... 12 hours
         private async Task CreateUserArrivedRecentlyData(string username, ICouchbaseCollection collection)
         {
             var id = $"{username}::arrived_recently";
-            var content = new
+            var content = new UserHasArrivedMarker
             {
                 Message = $"{username} arrived: " + DateTime.Now
             };

@@ -33,6 +33,9 @@
     <Compile Include="Core\RequestHandlerTests\SoundEffectLookupHandlerTests.cs" />
     <Compile Include="Core\RequestHandlerTests\StaticCommandsLookupHandlerTests.cs" />
     <Compile Include="Core\RequestHandlerTests\StaticMessageHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\StoreMessageHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\TroutHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\UserHasArrivedHandlerTests.cs" />
     <Compile Include="Core\TwitchCommandRequestFactoryTests.cs" />
     <Compile Include="Fakes\FakeConfiguration.cs" />
     <Compile Include="Fakes\FakeConfigurationSection.cs" />
@@ -43,6 +46,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Couchbase.Extensions.DependencyInjection" Version="3.0.1" />
+    <PackageReference Include="CouchbaseNetClient" Version="3.0.2" />
     <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">

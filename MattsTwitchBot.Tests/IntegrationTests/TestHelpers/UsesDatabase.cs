@@ -71,21 +71,5 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
             DocumentsToRemove.ForEach(async key => await Collection.RemoveAsync(key));
             await TestCluster.DisposeAsync();
         }
-
-        public class TestKeyGenerator : IKeyGenerator
-        {
-            private readonly List<string> _documentsToRemove;
-
-            public TestKeyGenerator(List<string> documentsToRemove)
-            {
-                _documentsToRemove = documentsToRemove;
-            }
-            public string NewDocKey()
-            {
-                var key = Guid.NewGuid().ToString();
-                _documentsToRemove.Add(key);
-                return key;
-            }
-        }
     }
 }
