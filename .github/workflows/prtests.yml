@@ -30,8 +30,10 @@ jobs:
       run: |
         dotnet build MattsTwitchBot.Web --configuration Release --no-restore
         dotnet publish MattsTwitchBot.Web -c Release -o ./myapp 
-    - name: Test
-      run: dotnet test MattsTwitchBot.Tests --verbosity normal
+    - name: Unit Tests
+      run: dotnet test MattsTwitchBot.Tests --verbosity normal # this seems to ignore SkipWhenLiveUnitTesting tests, which is fine (see next step)
+    - name: Integration Tests
+      run: dotnet test MattsTwitchBot.Tests --verbosity normal --filter TestCategory=SkipWhenLiveUnitTesting
       env:
         COUCHBASE_CONNECTION_STRING: couchbase://localhost
         COUCHBASE_USERNAME: Administrator
