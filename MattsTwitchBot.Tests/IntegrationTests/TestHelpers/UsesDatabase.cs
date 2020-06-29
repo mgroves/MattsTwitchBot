@@ -14,6 +14,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
     // 2. Any documents added to DocumentsToRemove will be removed after every test
     // 3. It will create a bucket for testing when necessary
     // 4. Bucket, Collection, BucketProvider are all made available to tests that inherit
+    [Category("SkipWhenLiveUnitTesting")]
     public abstract class UsesDatabase
     {
         protected ICluster TestCluster;
