@@ -190,7 +190,6 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
         public event EventHandler<OnReconnectedEventArgs> OnReconnected;
         public event EventHandler<OnVIPsReceivedArgs> OnVIPsReceived;
         public event EventHandler<OnCommunitySubscriptionArgs> OnCommunitySubscription;
-        public event EventHandler<OnAnonGiftedSubscriptionArgs> OnAnonGiftedSubscription;
         public event EventHandler<OnMessageClearedArgs> OnMessageCleared;
         public event EventHandler<OnRitualNewChatterArgs> OnRitualNewChatter;
 

@@ -1,21 +1,17 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
-using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.RequestHandlers;
 using MattsTwitchBot.Core.RequestHandlers.OneOffs;
 using MattsTwitchBot.Tests.Fakes;
 using Moq;
 using NUnit.Framework;
-using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models.Builders;
 
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class ShoutOutTests : UnitTest
+    public class ShoutOutHandlerTests : UnitTest
     {
         private ShoutOutHandler _handler;
 
@@ -27,9 +23,9 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         }
 
         [TestCase(true, true, 1, Description = "user who is mod AND sub can shout out")]
-        // [TestCase(true, false, 1, Description = "user who is sub but not mod can shout out")]
-        // [TestCase(false, true, 1, Description = "user who is mod but not sub can shout out")]
-        // [TestCase(false, false, 0, Description = "user who is not mod or sub can NOT shout out")]
+        [TestCase(true, false, 1, Description = "user who is sub but not mod can shout out")]
+        [TestCase(false, true, 1, Description = "user who is mod but not sub can shout out")]
+        [TestCase(false, false, 0, Description = "user who is not mod or sub can NOT shout out")]
         public async Task ShoutOut_is_limited_to_mods_and_subs(bool isSub, bool isMod, int numVerified)
         {
             // arrange

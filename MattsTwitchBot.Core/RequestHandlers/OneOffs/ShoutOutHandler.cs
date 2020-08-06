@@ -24,8 +24,10 @@ namespace MattsTwitchBot.Core.RequestHandlers.OneOffs
         {
             var message = request.Message;
 
-            if (!message.IsSubscriber && !message.IsModerator)
-                return default;
+            if (message.IsSubscriber || message.IsModerator)
+                ; // do nothing, shout out is allowed
+            else
+                return default; // return, no shout out allowed
 
             var userToShout = ParseUserNameFromCommand(message.Message);
 
