@@ -1,8 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core;
-using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Main;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
 using NUnit.Framework;
@@ -10,7 +9,7 @@ using NUnit.Framework;
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class SoundEffectHandlerTests
+    public class SoundEffectHandlerTests : UnitTest
     {
         private SoundEffectHandler _handler;
         private Mock<IHubContext<ChatWebPageHub, IChatWebPageHub>> _mockHub;

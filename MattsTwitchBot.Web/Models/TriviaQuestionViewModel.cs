@@ -6,5 +6,6 @@ namespace MattsTwitchBot.Web.Models
     public class TriviaQuestionViewModel
     {
         public List<TriviaQuestion> Questions { get; set; }
+        public List<string> Messages { get; set; }
     }
 }

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase;
-using Couchbase.Core;
 using MattsTwitchBot.Core;
-using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Chat;
 using Moq;
 using NUnit.Framework;
 using TwitchLib.Client.Models;
@@ -14,19 +11,15 @@ using TwitchLib.Client.Models.Builders;
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class StoreMessageHandlerTests
+    public class StoreMessageHandlerTests : UnitTest
     {
         private StoreMessageHandler _handler;
-        private Mock<ITwitchBucketProvider> _mockTwitchBucketProvider;
-        private Mock<IBucket> _mockBucket;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            _mockTwitchBucketProvider = new Mock<ITwitchBucketProvider>();
-            _mockBucket = new Mock<IBucket>();
-            _mockTwitchBucketProvider.Setup(x => x.GetBucket()).Returns(_mockBucket.Object);
-            _handler = new StoreMessageHandler(_mockTwitchBucketProvider.Object);
+            base.Setup();
+            _handler = new StoreMessageHandler(MockBucketProvider.Object, new KeyGenerator());
         }
 
         [Test]
@@ -50,10 +43,10 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockBucket.Verify(x => x.InsertAsync(It.Is<Document<ChatMessage>>(d => d.Id != Guid.Empty.ToString())), Times.Once());
-            _mockBucket.Verify(x => x.InsertAsync(It.Is<Document<ChatMessage>>(d => d.Content.Username == expectedUsername)), Times.Once());
-            _mockBucket.Verify(x => x.InsertAsync(It.Is<Document<ChatMessage>>(d => d.Content.Message == expectedMessage)), Times.Once());
-            _mockBucket.Verify(x => x.InsertAsync(It.Is<Document<ChatMessage>>(d => d.Content.Channel == expectedChannel)), Times.Once());
+            MockCollection.Verify(x => x.InsertAsync(It.IsAny<string>(), It.IsAny<ChatMessage>(), null), Times.Once());
+            MockCollection.Verify(x => x.InsertAsync(It.IsAny<string>(), It.Is<ChatMessage>(d => d.Username == expectedUsername), null), Times.Once());
+            MockCollection.Verify(x => x.InsertAsync(It.IsAny<string>(), It.Is<ChatMessage>(d => d.Message == expectedMessage), null), Times.Once());
+            MockCollection.Verify(x => x.InsertAsync(It.IsAny<string>(), It.Is<ChatMessage>(d => d.Channel == expectedChannel), null), Times.Once());
         }
     }
 }

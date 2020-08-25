@@ -53,3 +53,13 @@
     text-decoration: underline;
     border: 6px solid white;
 }
+
+.ticker {
+    background-color: white;
+    color: black;
+    width: 100%;
+    display: none;
+    font-family: monospace;
+    font-size: 50px;
+    margin-top: 20px;
+}

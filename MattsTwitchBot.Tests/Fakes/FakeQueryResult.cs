@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Couchbase.N1QL;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Couchbase.Core.Retry;
+using Couchbase.Query;
 
 namespace MattsTwitchBot.Tests.Fakes
 {
@@ -9,40 +10,24 @@ namespace MattsTwitchBot.Tests.Fakes
     {
         public List<T> FakeRows { private get; set; }
 
-        public List<T> Rows => FakeRows;
+        public IAsyncEnumerable<T> Rows => FakeRows.ToAsyncEnumerable();
 
+        #region unimplemented
 
-        #region not implemented
-        public IEnumerator<T> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
-        public bool ShouldRetry()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Success { get; }
-        public string Message { get; }
-        public Exception Exception { get; }
         public void Dispose()
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
         }
 
-        public Guid RequestId { get; }
-        public string ClientContextId { get; }
-        public dynamic Signature { get; }
-        public QueryStatus Status { get; }
+        public IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = new CancellationToken())
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public RetryReason RetryReason { get; }
+        public QueryMetaData? MetaData { get; }
         public List<Error> Errors { get; }
-        public List<Warning> Warnings { get; }
-        public Metrics Metrics { get; }
-        #endregion
+
+        #endregion  
     }
 }

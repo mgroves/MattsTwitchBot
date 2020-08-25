@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Trivia;
 using MattsTwitchBot.Web.Controllers;
 using MattsTwitchBot.Web.Models;
 using MediatR;

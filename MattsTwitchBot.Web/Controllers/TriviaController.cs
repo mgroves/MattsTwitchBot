@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Trivia;
 using MattsTwitchBot.Web.Filters;
 using MattsTwitchBot.Web.Models;
 using MediatR;
@@ -30,15 +31,20 @@ namespace MattsTwitchBot.Web.Controllers
         [BearerToken]
         public async Task<IActionResult> GetRandomTriviaQuestions()
         {
-            var resp = await _mediator.Send(new GetRandomTriviaQuestions());
-            var viewModel = new TriviaQuestionViewModel {Questions = resp};
+            var questions = await _mediator.Send(new GetRandomTriviaQuestions());
+            var msg = await _mediator.Send(new GetPreShowMessages());
+            var viewModel = new TriviaQuestionViewModel
+            {
+                Questions = questions == null ? null : await questions.ToListAsync(),
+                Messages = msg?.Messages
+            };
             return Ok(viewModel);
         }
 
         [Authorize]
         [HttpGet]
         [Route("/trivia/submit")]
-        public async Task<IActionResult> SubmitTriviaQuestion()
+        public IActionResult SubmitTriviaQuestion()
         {
             return View(new TriviaQuestionEditModel());
         }
@@ -69,7 +75,12 @@ namespace MattsTwitchBot.Web.Controllers
         {
             var respNumPages = await _mediator.Send(new GetTotalNumberOfTriviaPages());
             var respQuestions = await _mediator.Send(new GetPageOfTriviaQuestions(pageNum));
-            var viewModel = new ManageTriviaQuestionsViewModel { Questions = respQuestions, CurrentPageNum = pageNum, TotalPages = respNumPages };
+            var viewModel = new ManageTriviaQuestionsViewModel
+            {
+                Questions = await respQuestions.ToListAsync(),
+                CurrentPageNum = pageNum,
+                TotalPages = respNumPages
+            };
             return View(viewModel);
         }
 
@@ -101,5 +112,16 @@ namespace MattsTwitchBot.Web.Controllers
 
             return View(model);
         }
+
+        [BearerToken]
+        [HttpGet]
+        [Route("/trivia/delete/{id}")]
+        public async Task<IActionResult> DeleteTriviaQuestion(string id)
+        {
+            var deleteTriviaQuestion = new DeleteTriviaQuestion(id);
+            await _mediator.Send(deleteTriviaQuestion);
+            return RedirectToAction("ManageTriviaQuestions");
+        }
+
     }
 }

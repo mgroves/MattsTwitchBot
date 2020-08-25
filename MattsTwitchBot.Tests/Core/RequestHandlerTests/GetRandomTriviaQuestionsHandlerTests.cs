@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
-using Couchbase.N1QL;
-using MattsTwitchBot.Core;
+using Couchbase.Query;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Trivia;
 using MattsTwitchBot.Tests.Fakes;
 using Moq;
 using NUnit.Framework;
@@ -14,19 +12,15 @@ using NUnit.Framework;
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class GetRandomTriviaQuestionsHandlerTests
+    public class GetRandomTriviaQuestionsHandlerTests : UnitTest
     {
         private GetRandomTriviaQuestionsHandler _handler;
-        private Mock<IBucket> _mockBucket;
-        private Mock<ITwitchBucketProvider> _mockBucketProvider;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            _mockBucket = new Mock<IBucket>();
-            _mockBucketProvider = new Mock<ITwitchBucketProvider>();
-            _mockBucketProvider.Setup(m => m.GetBucket()).Returns(_mockBucket.Object);
-            _handler = new GetRandomTriviaQuestionsHandler(_mockBucketProvider.Object);
+            base.Setup();
+            _handler = new GetRandomTriviaQuestionsHandler(MockBucketProvider.Object);
         }
 
         [Test]
@@ -36,15 +30,17 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             var queryResult = new FakeQueryResult<TriviaQuestion>();
             queryResult.FakeRows = new List<TriviaQuestion>();
             var req = new GetRandomTriviaQuestions(numQuestions: 13);
-            _mockBucket.Setup(m => m.QueryAsync<TriviaQuestion>(It.IsAny<IQueryRequest>(), It.IsAny<CancellationToken>()))
+            MockCluster.Setup(m => m.QueryAsync<TriviaQuestion>(It.IsAny<string>(), It.IsAny<QueryOptions>()))
                 .ReturnsAsync(queryResult);
 
             // act
             var result = await _handler.Handle(req, CancellationToken.None);
 
             // assert
-            _mockBucket.Verify(m => m.QueryAsync<TriviaQuestion>(It.IsAny<IQueryRequest>(),It.IsAny<CancellationToken>()),
+            MockCluster.Verify(m => m.QueryAsync<TriviaQuestion>(It.IsAny<string>(),It.IsAny<QueryOptions>()),
                 Times.Once);
+            var resultList = await result.ToListAsync();
+            Assert.That(resultList, Is.Not.Null);
         }
     }
 }

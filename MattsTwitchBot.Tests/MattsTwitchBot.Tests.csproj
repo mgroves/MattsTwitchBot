@@ -7,6 +7,47 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Core\**" />
+    <Compile Remove="Fakes\**" />
+    <Compile Remove="ViewModels\**" />
+    <EmbeddedResource Remove="Core\**" />
+    <EmbeddedResource Remove="Fakes\**" />
+    <EmbeddedResource Remove="ViewModels\**" />
+    <None Remove="Core\**" />
+    <None Remove="Fakes\**" />
+    <None Remove="ViewModels\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Core\RequestHandlerTests\CreateProfileIfNotExistsTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\GetHomePageInfoHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\GetProfileHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\GetRandomTriviaQuestionsHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\HelpHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\LurkHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\ModifyProfileHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\SayCurrentProjectHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\SetCurrentProjectHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\ShoutOutHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\SoundEffectHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\SoundEffectLookupHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\StaticCommandsLookupHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\StaticMessageHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\StoreMessageHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\TroutHandlerTests.cs" />
+    <Compile Include="Core\RequestHandlerTests\UserHasArrivedHandlerTests.cs" />
+    <Compile Include="Core\TwitchCommandRequestFactoryTests.cs" />
+    <Compile Include="Fakes\FakeConfiguration.cs" />
+    <Compile Include="Fakes\FakeConfigurationSection.cs" />
+    <Compile Include="Fakes\FakeExistsResult.cs" />
+    <Compile Include="Fakes\FakeGetResult.cs" />
+    <Compile Include="Fakes\FakeMutationResult.cs" />
+    <Compile Include="Fakes\FakeQueryResult.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="8.0.2" />
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
@@ -14,7 +55,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
-    <PackageReference Include="TwitchLib.Client" Version="3.1.4" />
+    <PackageReference Include="Scriban" Version="2.1.3" />
+    <PackageReference Include="TwitchLib.Api" Version="3.1.3" />
+    <PackageReference Include="TwitchLib.Client" Version="3.1.5" />
   </ItemGroup>
 
   <ItemGroup>

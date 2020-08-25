@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Profile;
 using MattsTwitchBot.Web.Controllers;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

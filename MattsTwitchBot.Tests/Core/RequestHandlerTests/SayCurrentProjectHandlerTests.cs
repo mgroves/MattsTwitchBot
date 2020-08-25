@@ -1,35 +1,25 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase.Core;
-using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.OneOffs;
 using MattsTwitchBot.Tests.Fakes;
 using Moq;
 using NUnit.Framework;
-using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models.Builders;
 
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class SayCurrentProjectHandlerTests
+    public class SayCurrentProjectHandlerTests : UnitTest
     {
         private SayCurrentProjectHandler _handler;
-        private Mock<ITwitchBucketProvider> _mockBucketProvider;
-        private Mock<ITwitchClient> _mockTwitchClient;
-        private Mock<IBucket> _mockBucket;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            _mockBucket = new Mock<IBucket>();
-            _mockBucketProvider = new Mock<ITwitchBucketProvider>();
-            _mockBucketProvider.Setup(x => x.GetBucket()).Returns(_mockBucket.Object);
-            _mockTwitchClient = new Mock<ITwitchClient>();
-            _handler = new SayCurrentProjectHandler(_mockBucketProvider.Object, _mockTwitchClient.Object);
+            base.Setup();
+            _handler = new SayCurrentProjectHandler(MockBucketProvider.Object, MockTwitchClient.Object);
         }
 
         [Test]
@@ -46,14 +36,15 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
                 .WithChannel("doesntmatterchannel")
                 .Build();
             var request = new SayCurrentProject(chatMessage);
-            _mockBucket.Setup(x => x.Get<CurrentProjectInfo>("currentProject"))
-                .Returns(new FakeOperationResult<CurrentProjectInfo> {Success = false});
+            MockCollection.Setup(m => m.GetAsync("currentProject", null))
+                .Throws<Exception>();
 
             // act
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockTwitchClient.Verify(x => x.SendMessage(It.IsAny<string>(), expectedDefaultMessage, false), Times.Once);
+            MockTwitchClient.Verify(x => x.SendMessage(It.IsAny<string>(), expectedDefaultMessage, false),
+                Times.Once);
         }
 
         [Test]
@@ -72,14 +63,14 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
                 .WithChannel("doesntmatterchannel")
                 .Build();
             var request = new SayCurrentProject(chatMessage);
-            _mockBucket.Setup(x => x.Get<CurrentProjectInfo>("currentProject"))
-                .Returns(new FakeOperationResult<CurrentProjectInfo> { Success = true, Value = projectInfo });
-
+            MockCollection.Setup(x => x.GetAsync("currentProject", null))
+                .ReturnsAsync(new FakeGetResult(projectInfo));
+        
             // act
             await _handler.Handle(request, CancellationToken.None);
-
+        
             // assert
-            _mockTwitchClient.Verify(x => x.SendMessage(It.IsAny<string>(), expectedMessage, false), Times.Once);
+            MockTwitchClient.Verify(x => x.SendMessage(It.IsAny<string>(), expectedMessage, false), Times.Once);
         }
     }
 }

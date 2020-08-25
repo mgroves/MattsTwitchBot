@@ -92,6 +92,8 @@ namespace MattsTwitchBot.Web
 
             services.AddSignalR();
             services.AddApplicationInsightsTelemetry();
+
+            services.AddTransient<IKeyGenerator, KeyGenerator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

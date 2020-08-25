@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
-using Couchbase;
-using Couchbase.Core;
+using Couchbase.KeyValue;
 using MattsTwitchBot.Core;
 using MattsTwitchBot.Core.Models;
-using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.Main;
 using MattsTwitchBot.Tests.Fakes;
+using MattsTwitchBot.Tests.Helpers;
 using Microsoft.AspNetCore.SignalR;
 using Moq;
 using NUnit.Framework;
@@ -17,11 +15,11 @@ using TwitchLib.Client.Models.Builders;
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class UserHasArrivedHandlerTests
+    public class UserHasArrivedHandlerTests : UnitTest
     {
         private UserHasArrivedHandler _handler;
-        private Mock<ITwitchBucketProvider> _mockBucketProvider;
-        private Mock<IBucket> _mockBucket;
+        // private Mock<ITwitchBucketProvider> _mockBucketProvider;
+        // private Mock<IBucket> _mockBucket;
         private Mock<IHubContext<ChatWebPageHub, IChatWebPageHub>> _mockHub;
         private Mock<IHubClients<IChatWebPageHub>> _mockHubClients;
         private Mock<IChatWebPageHub> _mockTwitchHub;
@@ -29,11 +27,6 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
         [SetUp]
         public void Setup()
         {
-            // setup database mocks
-            _mockBucket = new Mock<IBucket>();
-            _mockBucketProvider = new Mock<ITwitchBucketProvider>();
-            _mockBucketProvider.Setup(x => x.GetBucket()).Returns(_mockBucket.Object);
-
             // setup signalr mocks
             _mockTwitchHub = new Mock<IChatWebPageHub>();
             _mockHubClients = new Mock<IHubClients<IChatWebPageHub>>();
@@ -41,36 +34,37 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             _mockHub = new Mock<IHubContext<ChatWebPageHub, IChatWebPageHub>>();
             _mockHub.Setup(x => x.Clients).Returns(_mockHubClients.Object);
 
-            _handler = new UserHasArrivedHandler(_mockBucketProvider.Object, _mockHub.Object);
+            _handler = new UserHasArrivedHandler(MockBucketProvider.Object, _mockHub.Object);
         }
 
-        [TestCase(false, 1)]        // if marker document doesn't exist, create it
-        [TestCase(true, 0)]         // if marker document does exist, don't create/update it
-        public async Task Create_recent_activity_marker_document_if_necessary(bool documentAlreadyExists, int timesCalled)
+        [Test]
+        public async Task Create_recent_activity_marker_document_if_necessary()
         {
             // arrange
             var username = "someusername";
-            _mockBucket.Setup(x => x.ExistsAsync($"{username}::arrived_recently"))
-                .ReturnsAsync(documentAlreadyExists);
+            MockCollection.Setup(x => x.ExistsAsync($"{username}::arrived_recently", null))
+                .ReturnsAsync(new FakeExistsResult(false));
             var twitchLibMessage = TwitchLibMessageBuilder.Create().WithUsername(username).Build();
             var chatMessage = ChatMessageBuilder.Create().WithTwitchLibMessage(twitchLibMessage).Build();
             var request = new UserHasArrived(chatMessage);
-            _mockBucket.Setup(x => x.GetAsync<TwitcherProfile>(It.IsAny<string>()))
-                .ReturnsAsync(new FakeOperationResult<TwitcherProfile> { Value = new TwitcherProfile() });
+            MockCollection.Setup(x => x.GetAsync(It.IsAny<string>(), null))
+                .ReturnsAsync(new FakeGetResult(new TwitcherProfile()));
             _mockTwitchHub.Setup(x => x.ReceiveFanfare(It.IsAny<FanfareInfo>()));
 
             // act
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            _mockBucket.Verify(x => x.UpsertAsync(
-
-                It.Is<Document<dynamic>>(x =>
-                        x.Id == $"{username}::arrived_recently"
-                        && x.Expiry == 12 * 60 * 60 * 1000 // 12 hours
-                )
-
-            ), Times.Exactly(timesCalled));
+            MockCollection.Verify(x => x.UpsertAsync(
+                It.Is<string>(k => k == $"{username}::arrived_recently"),
+                It.IsAny<UserHasArrivedMarker>(),
+                It.IsAny<UpsertOptions>()), Times.Once);
+            MockCollection.Verify(x => x.UpsertAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<UserHasArrivedMarker>(),
+                    It.Is<UpsertOptions>(u =>
+                        (u.GetInternalPropertyValue<TimeSpan, UpsertOptions>("ExpiryValue")).Hours == 12)),
+                Times.Once);
         }
 
         [TestCase(false, 0)]
@@ -90,18 +84,18 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             var twitchLibMessage = TwitchLibMessageBuilder.Create().WithUsername(username).Build();
             var chatMessage = ChatMessageBuilder.Create().WithTwitchLibMessage(twitchLibMessage).Build();
             var request = new UserHasArrived(chatMessage);
-            _mockBucket.Setup(x => x.ExistsAsync($"{username}::arrived_recently"))
-                .ReturnsAsync(false);
-            _mockBucket.Setup(x => x.GetAsync<TwitcherProfile>(It.IsAny<string>()))
-                .ReturnsAsync(new FakeOperationResult<TwitcherProfile> { Value = new TwitcherProfile { HasFanfare = hasFanfare, Fanfare = expectedFanfare} });
-
+            MockCollection.Setup(x => x.ExistsAsync($"{username}::arrived_recently",null))
+                .ReturnsAsync(new FakeExistsResult(false));
+            MockCollection.Setup(x => x.GetAsync(It.IsAny<string>(),null))
+                .ReturnsAsync(new FakeGetResult(new TwitcherProfile { HasFanfare = hasFanfare, Fanfare = expectedFanfare}));
+        
             // act
             await _handler.Handle(request, CancellationToken.None);
-
+        
             // assert
             _mockTwitchHub.Verify(x => x.ReceiveFanfare(expectedFanfare), Times.Exactly(timesSent));
         }
-
+        
         [Test]
         public async Task No_fanfare_if_there_is_no_user_profile()
         {
@@ -111,17 +105,17 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             var chatMessage = ChatMessageBuilder.Create().WithTwitchLibMessage(twitchLibMessage).Build();
             var request = new UserHasArrived(chatMessage);
             // setup: user has NOT arrive recently
-            _mockBucket.Setup(m => m.ExistsAsync($"{username}::arrived_recently"))
-                .ReturnsAsync(false);
+            MockCollection.Setup(m => m.ExistsAsync($"{username}::arrived_recently", null))
+                .ReturnsAsync(new FakeExistsResult(false));
             // setup: don't care about the arrive_recently document being added
-            _mockBucket.Setup(m => m.UpsertAsync(It.IsAny<Document<dynamic>>()));
+            MockCollection.Setup(m => m.UpsertAsync(It.IsAny<string>(), It.IsAny<UserHasArrivedMarker>(), null));
             // setup: user does NOT have a profile
-            _mockBucket.Setup(m => m.GetAsync<TwitcherProfile>(username.ToLower()))
-                .ReturnsAsync(new FakeOperationResult<TwitcherProfile> {Value = null});
-
+            MockCollection.Setup(m => m.GetAsync(username.ToLower(), null))
+                .ReturnsAsync(new FakeGetResult(null));
+        
             // act
             await _handler.Handle(request, CancellationToken.None);
-
+        
             // assert
             _mockTwitchHub.Verify(m => m.ReceiveFanfare(It.IsAny<FanfareInfo>()), Times.Never);
         }

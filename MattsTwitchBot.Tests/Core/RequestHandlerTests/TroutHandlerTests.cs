@@ -1,28 +1,22 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using MattsTwitchBot.Core;
-using MattsTwitchBot.Core.RequestHandlers;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.RequestHandlers.OneOffs;
 using Moq;
 using NUnit.Framework;
-using TwitchLib.Client.Interfaces;
 using TwitchLib.Client.Models.Builders;
 
 namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
 {
     [TestFixture]
-    public class TroutHandlerTests
+    public class TroutHandlerTests : UnitTest
     {
         private TroutHandler _handler;
-        private Mock<ITwitchClient> _mockTwitchClient;
-        private Mock<ITwitchApiWrapper> _mockTwitchWrapper;
 
         [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            _mockTwitchClient = new Mock<ITwitchClient>();
-            _mockTwitchWrapper = new Mock<ITwitchApiWrapper>();
-            _handler = new TroutHandler(_mockTwitchClient.Object, _mockTwitchWrapper.Object);
+            base.Setup();
+            _handler = new TroutHandler(MockTwitchClient.Object, MockApiWrapper.Object);
         }
 
         [TestCase("!trout")]
@@ -45,7 +39,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             await _handler.Handle(troutRequest, CancellationToken.None);
 
             // assert
-            _mockTwitchClient.Verify(m =>
+            MockTwitchClient.Verify(m =>
                 m.SendMessage(It.IsAny<string>(), expectedMessage, false), Times.Once);
         }
 
@@ -62,7 +56,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
                 .WithTwitchLibMessage(twitchLibMessage)
                 .WithMessage($"!trout {userThatDoesntExist}")
                 .Build();
-            _mockTwitchWrapper.Setup(m => m.DoesUserExist(userThatDoesntExist))
+            MockApiWrapper.Setup(m => m.DoesUserExist(userThatDoesntExist))
                 .ReturnsAsync(false);
 
             var troutRequest = new Trout(chatMessage);
@@ -71,7 +65,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             await _handler.Handle(troutRequest, CancellationToken.None);
 
             // assert
-            _mockTwitchClient.Verify(m => 
+            MockTwitchClient.Verify(m => 
                 m.SendMessage(It.IsAny<string>(), expectedMessage, false), Times.Once);
         }
 
@@ -87,7 +81,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
                 .WithTwitchLibMessage(twitchLibMessage)
                 .WithMessage($"!trout {userThatDoesExist}")
                 .Build();
-            _mockTwitchWrapper.Setup(m => m.DoesUserExist(It.IsAny<string>()))
+            MockApiWrapper.Setup(m => m.DoesUserExist(It.IsAny<string>()))
                 .ReturnsAsync(true);
 
             var troutRequest = new Trout(chatMessage);
@@ -96,7 +90,7 @@ namespace MattsTwitchBot.Tests.Core.RequestHandlerTests
             await _handler.Handle(troutRequest, CancellationToken.None);
 
             // assert
-            _mockTwitchClient.Verify(x =>
+            MockTwitchClient.Verify(x =>
                 x.SendMessage(It.IsAny<string>(), $"/me slaps @{userThatDoesExist.Replace("@","")} around a bit with a large trout.",It.IsAny<bool>())
                 ,Times.Once);
         }

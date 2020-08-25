@@ -16,7 +16,15 @@
         frameborder="0"
         allow="autoplay;"
         allowfullscreen></iframe>
-    
+
+    @if (Model.TickerMessages != null && Model.TickerMessages.Any())
+    {
+        @foreach (var message in Model.TickerMessages)
+        {
+            <partial name="_TickerMessage" model="@message"/>
+        }
+    }
+
     @if (Model.Badges != null)
     {
         @foreach (var badge in Model.Badges)

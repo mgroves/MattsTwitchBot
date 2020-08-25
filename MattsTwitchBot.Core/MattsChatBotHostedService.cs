@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
-using MattsTwitchBot.Core.Requests;
+using MattsTwitchBot.Core.Notifications;
+using MattsTwitchBot.Core.RequestHandlers.Main;
 using MediatR;
 using Microsoft.Extensions.Hosting;
 using TwitchLib.Client.Events;
@@ -13,6 +15,8 @@ namespace MattsTwitchBot.Core
         private readonly IMediator _mediator;
         private readonly ITwitchClient _twitchClient;
         private readonly TwitchCommandRequestFactory _commandFactory;
+        private Timer _timer;
+        private int _numMinutes;
 
         public MattsChatBotHostedService(IMediator mediator, ITwitchClient twitchClient, TwitchCommandRequestFactory commandFactory)
         {
@@ -26,7 +30,16 @@ namespace MattsTwitchBot.Core
             _twitchClient.OnMessageReceived += Client_OnMessageReceived;
             _twitchClient.Connect();
 
+            _timer = new Timer(TimedWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+
             return Task.CompletedTask;
+        }
+
+        private void TimedWork(object state)
+        {
+            _mediator.Publish(new MinuteHeartbeatNotification(_numMinutes));
+            _numMinutes++;
+            if (_numMinutes == 61) _numMinutes = 0;
         }
 
         private async void Client_OnMessageReceived(object sender, OnMessageReceivedArgs e)
