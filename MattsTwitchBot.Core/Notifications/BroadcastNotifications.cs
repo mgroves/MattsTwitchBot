@@ -57,7 +57,7 @@ namespace MattsTwitchBot.Core.Notifications
                         message = "Interested in learning more about Couchbase? Follow https://twitter.com/CouchbaseDev";
                         break;
                     case 2:
-                        message = "Got something to say about Couchbase or NoSQL? Submit a session to the CFP today: https://sessionize.com/couchbase-connect-online";
+                        message = "Check out the Couchbase Developer portal: https://developer.couchbase.com";
                         break;
                 }
                 _twitchClient.SendMessage(_twitchOptions.Value.Username, message);
