@@ -11,7 +11,7 @@ namespace MattsTwitchBot.Core.Notifications
     {
         private readonly ITwitchClient _twitchClient;
         private readonly IOptions<TwitchOptions> _twitchOptions;
-        private Random _rand;
+        private readonly Random _rand;
 
         public BroadcastNotifications(ITwitchClient twitchClient, IOptions<TwitchOptions> twitchOptions)
         {

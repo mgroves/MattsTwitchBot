@@ -11,7 +11,6 @@ using NUnit.Framework;
 namespace MattsTwitchBot.Tests.IntegrationTests.HostedServiceTests
 {
     [TestFixture]
-
     public class MattsChatBotHostedServiceTests : UsesDatabase
     {
         private MattsChatBotHostedService _service;
@@ -23,7 +22,8 @@ namespace MattsTwitchBot.Tests.IntegrationTests.HostedServiceTests
         {
             await base.Setup();
             _fakeTwitchClient = new FakeTwitchClient();
-            _mediator = TestMediator.Build(twitchClient: _fakeTwitchClient, bucketProvider: BucketProvider, keyGenerator: TestKeyGen);
+            TestConfiguration.FakeValues["Twitch"] = "fake twitch";
+            _mediator = TestMediator.Build(twitchClient: _fakeTwitchClient, bucketProvider: BucketProvider, keyGenerator: TestKeyGen, configuration: TestConfiguration);
             _service = new MattsChatBotHostedService(_mediator, _fakeTwitchClient, new TwitchCommandRequestFactory(_mediator));
         }
 

@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Couchbase;
 using Couchbase.KeyValue;
 using MattsTwitchBot.Core;
+using MattsTwitchBot.Tests.Fakes;
+using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
@@ -23,6 +25,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
         protected IBucket Bucket;
         protected IntegrationTestBucketProvider BucketProvider;
         protected IKeyGenerator TestKeyGen;
+        protected FakeConfiguration TestConfiguration;
 
         [SetUp]
         public virtual async Task Setup()
@@ -44,6 +47,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
             DocumentsToRemove = new List<string>();
             BucketProvider = new IntegrationTestBucketProvider(Bucket);
             TestKeyGen = new TestKeyGenerator(DocumentsToRemove);
+            TestConfiguration = new FakeConfiguration();
         }
 
         // use this method so that the document will get removed

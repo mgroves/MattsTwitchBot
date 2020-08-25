@@ -2,6 +2,7 @@
 using MattsTwitchBot.Core;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using TwitchLib.Client.Interfaces;
@@ -14,7 +15,8 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
             ITwitchApiWrapper twitchApiWrapper = null,
             ITwitchBucketProvider bucketProvider = null,
             IKeyGenerator keyGenerator = null,
-            IHubContext<ChatWebPageHub, IChatWebPageHub> hubContext = null)
+            IHubContext<ChatWebPageHub, IChatWebPageHub> hubContext = null,
+            IConfiguration configuration = null)
         {
             var services = new ServiceCollection();
 
@@ -26,6 +28,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
             services.AddSingleton<ITwitchBucketProvider>(bucketProvider ?? new Mock<ITwitchBucketProvider>().Object);
             services.AddSingleton<IKeyGenerator>(x => keyGenerator ?? new Mock<IKeyGenerator>().Object);
             services.AddTransient<IHubContext<ChatWebPageHub, IChatWebPageHub>>(x => hubContext ?? new Mock<IHubContext<ChatWebPageHub, IChatWebPageHub>>().Object);
+            services.Configure<TwitchOptions>(configuration.GetSection("Twitch"));
 
             var provider = services.BuildServiceProvider();
 
