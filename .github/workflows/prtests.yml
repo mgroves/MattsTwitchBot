@@ -31,7 +31,9 @@ jobs:
         dotnet build MattsTwitchBot.Web --configuration Release --no-restore
         dotnet publish MattsTwitchBot.Web -c Release -o ./myapp 
     - name: Tests
-      run: dotnet test MattsTwitchBot.Tests --verbosity normal
+      run: |
+        echo $COUCHBASE_CONNECTION_STRING $COUCHBASE_USERNAME $COUCHBASE_PASSWORD $COUCHBASE_BUCKET_NAME
+        dotnet test MattsTwitchBot.Tests --verbosity normal
       env:
         COUCHBASE_CONNECTION_STRING: couchbase://localhost
         COUCHBASE_USERNAME: Administrator
