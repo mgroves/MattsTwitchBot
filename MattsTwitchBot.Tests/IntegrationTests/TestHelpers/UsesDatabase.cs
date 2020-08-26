@@ -30,9 +30,6 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
         [SetUp]
         public virtual async Task Setup()
         {
-            if(Environment.GetEnvironmentVariable("COUCHBASE_BUCKET_NAME") != "testbucket")
-                throw new Exception("not getting the environment variable for some reason");
-
             var connectionString = Environment.GetEnvironmentVariable("COUCHBASE_CONNECTION_STRING") ?? "couchbase://localhost";
             var username = Environment.GetEnvironmentVariable("COUCHBASE_USERNAME") ?? "Administrator";
             var password = Environment.GetEnvironmentVariable("COUCHBASE_PASSWORD") ?? "password";
