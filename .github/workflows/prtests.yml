@@ -23,7 +23,7 @@ jobs:
       uses: brantburnett/run-couchbasefakeit@v0.1
       with:
         couchbase-version: enterprise-6.5.0
-        couchbase-configuration: couchbasefakeitconfig
+        couchbase-configuration: dbconfig
     - name: Install dependencies
       run: dotnet restore MattsTwitchBot.Web
     - name: Build and Publish  # not sure if I need this step just for testing
