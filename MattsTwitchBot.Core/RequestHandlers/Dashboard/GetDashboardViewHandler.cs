@@ -28,11 +28,14 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
                 await collection.InsertAsync("staticContentCommands", new HomePageInfo());
             if (!(await collection.ExistsAsync("triviaMessages")).Exists)
                 await collection.InsertAsync("triviaMessages", new TriviaMessages());
+            if (!(await collection.ExistsAsync("chatNotificationInfo")).Exists)
+                await collection.InsertAsync("chatNotificationInfo", new ChatNotificationInfo());
 
             // get the homepageinfo and staticcontent and trivia message docs with three KV calls
             var homePageInfo = (await collection.GetAsync("homePageInfo")).ContentAs<HomePageInfo>();
             var staticContentCommands = (await collection.GetAsync("staticContentCommands")).ContentAs<ValidStaticCommands>();
             var triviaMessages = (await collection.GetAsync("triviaMessages")).ContentAs<TriviaMessages>();
+            var chatNotificationInfo = (await collection.GetAsync("chatNotificationInfo")).ContentAs<ChatNotificationInfo>();
 
             // get a list of everyone with a profile with N1QL
             var profilesN1ql = $"SELECT RAW META(t).id FROM `{bucket.Name}` t WHERE t.type = 'profile'";
@@ -45,6 +48,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
             view.StaticContentCommands = staticContentCommands;
             view.Profiles = profiles == null ? null : await profiles.ToListAsync(cancellationToken);
             view.TriviaMessages = triviaMessages;
+            view.ChatNotificationInfo = chatNotificationInfo;
             return view;
         }
     }

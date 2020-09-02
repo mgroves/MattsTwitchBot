@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MattsTwitchBot.Core.Models;
 using MediatR;
 using Microsoft.Extensions.Options;
 using TwitchLib.Client.Interfaces;
@@ -11,60 +12,40 @@ namespace MattsTwitchBot.Core.Notifications
     {
         private readonly ITwitchClient _twitchClient;
         private readonly IOptions<TwitchOptions> _twitchOptions;
+        private readonly ITwitchBucketProvider _bucketProvider;
         private readonly Random _rand;
 
-        public BroadcastNotifications(ITwitchClient twitchClient, IOptions<TwitchOptions> twitchOptions)
+        public BroadcastNotifications(ITwitchClient twitchClient, IOptions<TwitchOptions> twitchOptions, ITwitchBucketProvider bucketProvider)
         {
             _twitchClient = twitchClient;
             _twitchOptions = twitchOptions;
+            _bucketProvider = bucketProvider;
             _rand = new Random();
         }
 
-        public Task Handle(MinuteHeartbeatNotification notification, CancellationToken cancellationToken)
+        public async Task Handle(MinuteHeartbeatNotification notification, CancellationToken cancellationToken)
         {
-            // TODO: this stuff should all be pulled from configuration and not hard coded
-
-            if (notification.NumMinutes == 0)
+            try
             {
-                _twitchClient.SendMessage(_twitchOptions.Value.Username, "Welcome to my Office Hours! Thanks for being here, and remember that the only stupid question is the one you don't ask.");
-                return default;
-            }
+                var bucket = await _bucketProvider.GetBucketAsync();
+                var coll = bucket.DefaultCollection();
+                var chatNotificationInfoDoc = await coll.GetAsync("chatNotificationInfo");
+                var chatNotificationInfo = chatNotificationInfoDoc.ContentAs<ChatNotificationInfo>();
 
-            // only show twitter message every 8 minutes
-            if (notification.NumMinutes % 8 == 0) { 
-                _twitchClient.SendMessage(_twitchOptions.Value.Username, "You can follow me on Twitter: https://twitter.com/mgroves");
-                return default;
-            }
-
-            // show !help message every 10 minutes
-            if (notification.NumMinutes % 10 == 0)
-            {
-                _twitchClient.SendMessage(_twitchOptions.Value.Username, "New here? Try using the !help command");
-                return default;
-            }
-
-            // show couchbase message every 12 minutes
-            if (notification.NumMinutes % 12 == 0)
-            {
-                var message = "";
-                var num = _rand.Next(0, 3);
-                switch (num)
+                foreach (var entry in chatNotificationInfo.Notifications)
                 {
-                    case 0:
-                        message = "This stream wouldn't be possible without the support of Couchbase! Try out the NoEQUAL database: https://couchbase.com/downloads";
-                        break;
-                    case 1:
-                        message = "Interested in learning more about Couchbase? Follow https://twitter.com/CouchbaseDev";
-                        break;
-                    case 2:
-                        message = "Check out the Couchbase Developer portal: https://developer.couchbase.com";
-                        break;
+                    var exactMinuteMatch = entry.EveryNMinute == notification.NumMinutes;
+                    var minuteMultiplierMatch = (notification.NumMinutes % entry.EveryNMinute) == 0;
+                    if (exactMinuteMatch || minuteMultiplierMatch)
+                    {
+                        _twitchClient.SendMessage(_twitchOptions.Value.Username, entry.RandomMessage);
+                    }
                 }
-                _twitchClient.SendMessage(_twitchOptions.Value.Username, message);
-                return default;
             }
-
-            return default;
+            catch
+            {
+                // TODO: log this somewhere maybe?
+            }
         }
     }
 }

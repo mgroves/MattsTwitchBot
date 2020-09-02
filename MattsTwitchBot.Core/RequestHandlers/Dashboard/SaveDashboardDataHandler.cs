@@ -21,6 +21,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
             await collection.UpsertAsync("homePageInfo", request.HomePageInfo);
             await collection.UpsertAsync("staticContentCommands", request.StaticCommandInfo);
             await collection.UpsertAsync("triviaMessages", request.TriviaMessages);
+            await collection.UpsertAsync("chatNotificationInfo", request.ChatNotificationInfo);
             return default;
         }
     }

@@ -5,7 +5,6 @@ using Couchbase;
 using Couchbase.KeyValue;
 using MattsTwitchBot.Core;
 using MattsTwitchBot.Tests.Fakes;
-using Microsoft.Extensions.Configuration;
 using NUnit.Framework;
 
 namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
