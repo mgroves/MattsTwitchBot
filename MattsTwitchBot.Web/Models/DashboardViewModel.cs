@@ -11,12 +11,14 @@ namespace MattsTwitchBot.Web.Models
             this.StaticContentCommandsJson = JsonConvert.SerializeObject(model.StaticContentCommands, Formatting.Indented);
             this.HomePageInfoJson = JsonConvert.SerializeObject(model.HomePageInfo, Formatting.Indented);
             this.TriviaMessagesJson = JsonConvert.SerializeObject(model.TriviaMessages, Formatting.Indented);
+            this.ChatNotificationInfoJson = JsonConvert.SerializeObject(model.ChatNotificationInfo, Formatting.Indented);
             this.Profiles = model.Profiles;
         }
 
         public string HomePageInfoJson { get; set; }
         public string StaticContentCommandsJson { get; set; }
         public string TriviaMessagesJson { get; set; }
+        public string ChatNotificationInfoJson { get; set; }
 
         public List<string> Profiles { get; set; }
     }

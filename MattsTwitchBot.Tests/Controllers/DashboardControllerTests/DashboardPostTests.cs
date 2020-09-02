@@ -21,6 +21,7 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
         private const string MinimumValidBadgesJson = "{\"Badges\": [], \"TickerMessages\": []}";
         private const string MinimumValidCommandJson = "{ \"Commands\" : [] }";
         private const string MinimumValidTriviaMessagesJson = "{ \"Messages\" : [], \"ShowMessages\" : false }";
+        private const string MinimumValidChatNotificationInfo = "{ \"Notifications\" : [] }";
 
         [SetUp]
         public void Setup()
@@ -35,7 +36,7 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
             // arrange
 
             // act
-            await _controller.DashboardPost(MinimumValidBadgesJson, MinimumValidCommandJson, MinimumValidTriviaMessagesJson);
+            await _controller.DashboardPost(MinimumValidBadgesJson, MinimumValidCommandJson, MinimumValidTriviaMessagesJson, MinimumValidChatNotificationInfo);
 
             // assert
             _mockMediator.Verify(m => m.Send(
@@ -47,15 +48,18 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
         public async Task SaveDashboardData_has_correct_serialized_objects_from_strings()
         {
             // arrange
-            var homePageInfo = new HomePageInfo {Badges = new List<SocialMediaBadge> { new SocialMediaBadge { Icon = "twumblr", Text = "mgroves"}}};
+            var homePageInfo = new HomePageInfo {Badges = new List<SocialMediaBadge> { new SocialMediaBadge { Icon = "tumblr", Text = "mgroves"}}};
             var staticContentCommands = new ValidStaticCommands {  Commands = new List<StaticCommandInfo> { new StaticCommandInfo { Command = "defend", Content = "defend the channel against invaders!"} } };
             var triviaMessages = new TriviaMessages {Messages = new List<string> { "hey what's up" }};
+            var chatNotificationInfo = new ChatNotificationInfo();
+
             var homePageInfoJson = JsonConvert.SerializeObject(homePageInfo);
+            var chatNotificationInfoJson = JsonConvert.SerializeObject(chatNotificationInfo);
             var staticContentCommandsJson = JsonConvert.SerializeObject(staticContentCommands);
             var triviaMessagesJson = JsonConvert.SerializeObject(triviaMessages);
 
             // act
-            await _controller.DashboardPost(homePageInfoJson, staticContentCommandsJson, triviaMessagesJson);
+            await _controller.DashboardPost(homePageInfoJson, staticContentCommandsJson, triviaMessagesJson, chatNotificationInfoJson);
 
             // assert
             _mockMediator.Verify(m => m.Send(
@@ -67,14 +71,14 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
         }
 
         // TODO: this is out of hand, the dashboard should be broken up
-        [TestCase(MinimumValidBadgesJson, MinimumValidCommandJson, "{ \"foo\" : \"bar\" }", false, false, true)]
-        [TestCase(MinimumValidBadgesJson, "{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", false, true, true)]
-        [TestCase("{ \"foo\" : \"bar\" }", MinimumValidCommandJson, MinimumValidTriviaMessagesJson, true, false, false)]
-        [TestCase("{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", MinimumValidTriviaMessagesJson, true, true, false)]
-        [TestCase("{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", true, true, true)]
-        [TestCase("", "", "", true, true, true)]
-        [TestCase(null, "", "", true, true, true)]
-        public async Task Sanity_check_the_json(string homePageInfojson, string staticContentJson, string triviaMessagesJson, bool shouldHaveHomePageError, bool shouldHaveStaticContentError, bool shouldHaveTriviaMessagesError)
+        [TestCase(MinimumValidBadgesJson, MinimumValidCommandJson, "{ \"foo\" : \"bar\" }", MinimumValidChatNotificationInfo, false, false, true, false)]
+        [TestCase(MinimumValidBadgesJson, "{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", MinimumValidChatNotificationInfo, false, true, true, false)]
+        [TestCase("{ \"foo\" : \"bar\" }", MinimumValidCommandJson, MinimumValidTriviaMessagesJson, MinimumValidChatNotificationInfo, true, false, false, false)]
+        [TestCase("{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", MinimumValidTriviaMessagesJson, MinimumValidChatNotificationInfo, true, true, false, false)]
+        [TestCase("{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", "{ \"foo\" : \"bar\" }", MinimumValidChatNotificationInfo, true, true, true, false)]
+        [TestCase("", "", "", "", true, true, true, true)]
+        [TestCase(null, "", "", "", true, true, true, true)]
+        public async Task Sanity_check_the_json(string homePageInfojson, string staticContentJson, string triviaMessagesJson, string chatNotificationInfo, bool shouldHaveHomePageError, bool shouldHaveStaticContentError, bool shouldHaveTriviaMessagesError, bool ShouldHaveChatNotificationError)
         {
             // arrange - this is valid JSON but it is NOT what I want to accept
             // arrange mediator command to reload dashboard
@@ -82,7 +86,7 @@ namespace MattsTwitchBot.Tests.Controllers.DashboardControllerTests
                 .ReturnsAsync(new DashboardView());
 
             // act
-            var result = await _controller.DashboardPost(homePageInfojson, staticContentJson, triviaMessagesJson);
+            var result = await _controller.DashboardPost(homePageInfojson, staticContentJson, triviaMessagesJson, chatNotificationInfo);
 
             // assert - if everything is valid, controller will redirect
             if (!shouldHaveHomePageError && !shouldHaveStaticContentError && !shouldHaveTriviaMessagesError)

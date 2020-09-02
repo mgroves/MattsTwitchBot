@@ -8,5 +8,6 @@ namespace MattsTwitchBot.Core.Models
         public ValidStaticCommands StaticContentCommands { get; set; }
         public TriviaMessages TriviaMessages { get; set; }
         public List<string> Profiles { get; set; }
+        public ChatNotificationInfo ChatNotificationInfo { get; set; }
     }
 }

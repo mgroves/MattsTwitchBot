@@ -7,6 +7,7 @@ using MattsTwitchBot.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using TwitchLib.Api.V5;
 
 namespace MattsTwitchBot.Web.Controllers
 {
@@ -35,7 +36,7 @@ namespace MattsTwitchBot.Web.Controllers
         [Route("/dashboard")]
         [BearerToken]
         [HttpPost]
-        public async Task<IActionResult> DashboardPost(string homePageInfo, string staticContentCommands, string triviaMessages)
+        public async Task<IActionResult> DashboardPost(string homePageInfo, string staticContentCommands, string triviaMessages, string chatNotificationInfo)
         {
             // sanity check validation on the JSON
             if(!homePageInfo.IsSaneJsonForType<HomePageInfo>())
@@ -44,6 +45,8 @@ namespace MattsTwitchBot.Web.Controllers
                 ModelState.AddModelError("staticContentCommandsJson", "That doesn't look like valid JSON for Static Content Commands");
             if (!triviaMessages.IsSaneJsonForType<TriviaMessages>())
                 ModelState.AddModelError("triviaMessagesJson", "That doesn't look like valid JSON for Trivia Messages");
+            if (!chatNotificationInfo.IsSaneJsonForType<ChatNotificationInfo>())
+                ModelState.AddModelError("chatNotificationInfo", "That doesn't look like valid JSON for Chat Notifications");
 
             // TODO: could also do strict validation checks (i.e. badges is required, commands is required, etc)
 
@@ -58,7 +61,8 @@ namespace MattsTwitchBot.Web.Controllers
             var cmd = new SaveDashboardData(
                 JsonConvert.DeserializeObject<HomePageInfo>(homePageInfo),
                 JsonConvert.DeserializeObject<ValidStaticCommands>(staticContentCommands),
-                JsonConvert.DeserializeObject<TriviaMessages>(triviaMessages)
+                JsonConvert.DeserializeObject<TriviaMessages>(triviaMessages),
+                JsonConvert.DeserializeObject<ChatNotificationInfo>(chatNotificationInfo)
             );
             await _mediator.Send(cmd);
 
