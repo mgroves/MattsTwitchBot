@@ -1,0 +1,3 @@
+# See https://github.com/brantburnett/couchbase-index-manager for reference
+name: testPrimary
+is_primary: true
