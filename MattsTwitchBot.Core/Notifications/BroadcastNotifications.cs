@@ -35,7 +35,9 @@ namespace MattsTwitchBot.Core.Notifications
                 foreach (var entry in chatNotificationInfo.Notifications)
                 {
                     var exactMinuteMatch = entry.EveryNMinute == notification.NumMinutes;
-                    var minuteMultiplierMatch = (notification.NumMinutes % entry.EveryNMinute) == 0;
+                    var minuteMultiplierMatch = false;
+                    if(entry.EveryNMinute > 1 && notification.NumMinutes > 0)
+                        minuteMultiplierMatch = (notification.NumMinutes % entry.EveryNMinute) == 0;
                     if (exactMinuteMatch || minuteMultiplierMatch)
                     {
                         _twitchClient.SendMessage(_twitchOptions.Value.Username, entry.RandomMessage);
