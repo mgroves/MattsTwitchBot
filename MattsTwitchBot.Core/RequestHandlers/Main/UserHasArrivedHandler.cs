@@ -26,7 +26,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Main
         public async Task<Unit> Handle(UserHasArrived request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("arrived");
 
             var hasUserArrivedRecently = await CheckIfUserHasArrivedRecently(request.Message.Username, collection);
 

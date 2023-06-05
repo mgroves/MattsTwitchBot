@@ -16,7 +16,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
         public async Task<Unit> Handle(SaveDashboardData request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("config");
 
             await collection.UpsertAsync("homePageInfo", request.HomePageInfo);
             await collection.UpsertAsync("staticContentCommands", request.StaticCommandInfo);

@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MattsTwitchBot.Core.Models;
+using MattsTwitchBot.Core.RequestHandlers;
 using MattsTwitchBot.Core.RequestHandlers.Dashboard;
 using MattsTwitchBot.Web.Extensions;
 using MattsTwitchBot.Web.Filters;
@@ -7,7 +8,7 @@ using MattsTwitchBot.Web.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using TwitchLib.Api.V5;
+using TwitchLib.Api;
 
 namespace MattsTwitchBot.Web.Controllers
 {

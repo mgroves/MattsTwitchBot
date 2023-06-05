@@ -20,7 +20,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.OneOffs
         public async Task<Unit> Handle(SayCurrentProject request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("config");
             var message = request.Message;
             var currentProjectDocumentKey = "currentProject";
 

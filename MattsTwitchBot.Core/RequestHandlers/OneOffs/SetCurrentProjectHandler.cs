@@ -47,7 +47,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.OneOffs
                 info.Url = uri;
 
                 var bucket = await _bucketProvider.GetBucketAsync();
-                var collection = bucket.DefaultCollection();
+                var collection = await bucket.CollectionAsync("config");
                 await collection.UpsertAsync(currentProjectDocumentKey, info);
                 _twitchClient.SendMessage(message.Channel, "Okay, got it!");
             }

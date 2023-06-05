@@ -19,7 +19,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
         public async Task<Unit> Handle(ModifyProfile request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("profiles");
 
             var chatMessage = request.Message;
 

@@ -26,7 +26,7 @@ namespace MattsTwitchBot.Tests
             MockCollection = new Mock<ICouchbaseCollection>();
             MockCluster = new Mock<ICluster>();
             MockBucket = new Mock<IBucket>();
-            MockBucket.Setup(m => m.DefaultCollection()).Returns(MockCollection.Object);
+            MockBucket.Setup(m => m.DefaultCollectionAsync()).ReturnsAsync(MockCollection.Object);
             MockBucket.Setup(m => m.Cluster).Returns(MockCluster.Object);
             MockBucketProvider = new Mock<ITwitchBucketProvider>();
             MockBucketProvider.Setup(m => m.GetBucketAsync()).ReturnsAsync(MockBucket.Object);

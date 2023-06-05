@@ -43,6 +43,12 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
             throw new NotImplementedException();
         }
 
+        public void Initialize(ConnectionCredentials credentials, List<string> channels, char chatCommandIdentifier = '!',
+            char whisperCommandIdentifier = '!', bool autoReListenOnExceptions = true)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SetConnectionCredentials(ConnectionCredentials credentials)
         {
             throw new NotImplementedException();
@@ -64,6 +70,11 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
         }
 
         public void RemoveWhisperCommandIdentifier(char identifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        bool ITwitchClient.Connect()
         {
             throw new NotImplementedException();
         }
@@ -123,6 +134,16 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
             throw new NotImplementedException();
         }
 
+        public void SendReply(JoinedChannel channel, string replyToId, string message, bool dryRun = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendReply(string channel, string replyToId, string message, bool dryRun = false)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SendQueuedItem(string message)
         {
             throw new NotImplementedException();
@@ -149,7 +170,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
         public WhisperMessage PreviousWhisper { get; }
         public string TwitchUsername { get; }
         public bool WillReplaceEmotes { get; set; }
-        public event EventHandler<OnBeingHostedArgs> OnBeingHosted;
+        //public event EventHandler<OnBeingHostedArgs> OnBeingHosted;
         public event EventHandler<OnChannelStateChangedArgs> OnChannelStateChanged;
         public event EventHandler<OnChatClearedArgs> OnChatCleared;
         public event EventHandler<OnChatColorChangedArgs> OnChatColorChanged;
@@ -159,8 +180,8 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
         public event EventHandler<OnDisconnectedEventArgs> OnDisconnected;
         public event EventHandler<OnExistingUsersDetectedArgs> OnExistingUsersDetected;
         public event EventHandler<OnGiftedSubscriptionArgs> OnGiftedSubscription;
-        public event EventHandler<OnHostingStartedArgs> OnHostingStarted;
-        public event EventHandler<OnHostingStoppedArgs> OnHostingStopped;
+        // public event EventHandler<OnHostingStartedArgs> OnHostingStarted;
+        // public event EventHandler<OnHostingStoppedArgs> OnHostingStopped;
         public event EventHandler OnHostLeft;
         public event EventHandler<OnIncorrectLoginArgs> OnIncorrectLogin;
         public event EventHandler<OnJoinedChannelArgs> OnJoinedChannel;
@@ -191,7 +212,12 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
         public event EventHandler<OnVIPsReceivedArgs> OnVIPsReceived;
         public event EventHandler<OnCommunitySubscriptionArgs> OnCommunitySubscription;
         public event EventHandler<OnMessageClearedArgs> OnMessageCleared;
-        public event EventHandler<OnRitualNewChatterArgs> OnRitualNewChatter;
+        public event EventHandler<OnRequiresVerifiedEmailArgs> OnRequiresVerifiedEmail;
+        public event EventHandler<OnRequiresVerifiedPhoneNumberArgs> OnRequiresVerifiedPhoneNumber;
+        public event EventHandler<OnBannedEmailAliasArgs> OnBannedEmailAlias;
+        public event EventHandler<OnUserIntroArgs> OnUserIntro;
+        public event EventHandler<OnAnnouncementArgs> OnAnnouncement;
+        //public event EventHandler<OnRitualNewChatterArgs> OnRitualNewChatter;
 
         #endregion
     }

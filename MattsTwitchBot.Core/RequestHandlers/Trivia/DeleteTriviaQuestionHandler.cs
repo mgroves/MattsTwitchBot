@@ -16,7 +16,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Trivia
         public async Task<Unit> Handle(DeleteTriviaQuestion request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("trivia");
             await collection.RemoveAsync(request.Id);
             return default;
         }

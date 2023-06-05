@@ -10,7 +10,7 @@ using TwitchLib.Client.Interfaces;
 
 namespace MattsTwitchBot.Core
 {
-    public class MattsChatBotHostedService : IHostedService
+    public class MattsChatBotHostedService : IHostedService, IDisposable
     {
         private readonly IMediator _mediator;
         private readonly ITwitchClient _twitchClient;
@@ -55,7 +55,13 @@ namespace MattsTwitchBot.Core
         public Task StopAsync(CancellationToken cancellationToken)
         {
             _twitchClient.Disconnect();
+            _timer?.Dispose();
             return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            _timer?.Dispose();
         }
     }
 }

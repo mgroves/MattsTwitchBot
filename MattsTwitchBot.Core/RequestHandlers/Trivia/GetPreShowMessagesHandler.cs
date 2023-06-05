@@ -17,7 +17,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Trivia
         public async Task<TriviaMessages> Handle(GetPreShowMessages request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("config");
 
             try
             {

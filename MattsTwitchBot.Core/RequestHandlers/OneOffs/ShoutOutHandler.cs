@@ -49,7 +49,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.OneOffs
         private async Task<string> GetShoutOutMessage(string userToShout)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("profiles");
 
             var defaultMessage = $"Hey everyone, check out @{userToShout}'s Twitch stream at https://twitch.tv/{userToShout}";
             var doesUserExist = (await collection.ExistsAsync(userToShout.ToLower())).Exists;

@@ -28,7 +28,7 @@ namespace MattsTwitchBot.Core.Notifications
             try
             {
                 var bucket = await _bucketProvider.GetBucketAsync();
-                var coll = bucket.DefaultCollection();
+                var coll = await bucket.CollectionAsync("config");
                 var chatNotificationInfoDoc = await coll.GetAsync("chatNotificationInfo");
                 var chatNotificationInfo = chatNotificationInfoDoc.ContentAs<ChatNotificationInfo>();
 

@@ -28,7 +28,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
             profile.Fanfare.YouTubeCode = request.FanfareYouTubeCode;
 
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("profiles");
 
             await collection.UpsertAsync(request.TwitchUsername, profile);
             return default;

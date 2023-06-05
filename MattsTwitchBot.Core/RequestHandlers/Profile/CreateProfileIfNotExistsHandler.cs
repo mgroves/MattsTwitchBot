@@ -17,7 +17,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
         public async Task<Unit> Handle(CreateProfileIfNotExists request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("profiles");
 
             var doesProfileExistResult = await collection.ExistsAsync(request.TwitchUsername);
 

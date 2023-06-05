@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.Api.Interfaces;
 
 namespace MattsTwitchBot.Core
@@ -22,8 +25,9 @@ namespace MattsTwitchBot.Core
             // defensively remove the @ symbol if it somehow makes it here
             var usernameWithNoAt = username.Replace("@", "");
 
-            var result = await _api.V5.Users.GetUserByNameAsync(usernameWithNoAt);
-            return result.Total > 0;
+            GetUsersResponse userListResponse = await _api.Helix.Users.GetUsersAsync(logins: new List<string> { usernameWithNoAt });
+
+            return userListResponse.Users.Length > 0;
         }
     }
 }

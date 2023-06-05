@@ -24,7 +24,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.StaticCommands
 
             // look up the content
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("config");
             var result = await collection.GetAsync("staticContentCommands");
             var contents = result.ContentAs<ValidStaticCommands>();
             var command = contents.Commands.First(c => c.Command == request.Command);

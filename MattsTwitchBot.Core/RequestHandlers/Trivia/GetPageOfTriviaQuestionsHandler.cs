@@ -22,8 +22,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Trivia
             var cluster = bucket.Cluster;
 
             var n1ql = @$"SELECT META(t).id, t.*
-                FROM `{bucket.Name}` t
-                WHERE t.type = 'trivia'
+                FROM `{bucket.Name}`._default.trivia t
                 ORDER BY t.approved, t.question
                 LIMIT $pageSize
                 OFFSET $pageNum * $pageSize";

@@ -17,7 +17,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.StaticCommands
         public async Task<ValidStaticCommands> Handle(StaticCommandsLookup request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("config");
 
             try
             {

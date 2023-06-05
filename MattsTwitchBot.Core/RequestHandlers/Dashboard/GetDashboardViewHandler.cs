@@ -18,7 +18,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
         public async Task<DashboardView> Handle(GetDashboardView request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("config");
             var cluster = bucket.Cluster;
 
             // create homepageinfo and staticcontent and pre-show message docs if they don't already exist
@@ -38,7 +38,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
             var chatNotificationInfo = (await collection.GetAsync("chatNotificationInfo")).ContentAs<ChatNotificationInfo>();
 
             // get a list of everyone with a profile with N1QL
-            var profilesN1ql = $"SELECT RAW META(t).id FROM `{bucket.Name}` t WHERE t.type = 'profile'";
+            var profilesN1ql = $"SELECT RAW META(t).id FROM `{bucket.Name}`._default.profiles t";
             var profilesResult = await cluster.QueryAsync<string>(profilesN1ql);
             var profiles = profilesResult.Rows;
 

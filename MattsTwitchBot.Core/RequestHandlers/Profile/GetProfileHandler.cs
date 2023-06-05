@@ -17,7 +17,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Profile
         public async Task<TwitcherProfile> Handle(GetProfile request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("profiles");
 
             var result = await collection.GetAsync(request.TwitchUsername);
             return result.ContentAs<TwitcherProfile>();

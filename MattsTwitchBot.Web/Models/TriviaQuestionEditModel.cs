@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using MattsTwitchBot.Core.Models;
+﻿using MattsTwitchBot.Core.Models;
 using MattsTwitchBot.Core.RequestHandlers.Trivia;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
@@ -24,7 +23,7 @@ namespace MattsTwitchBot.Web.Models
             this.SubmittedBy = resp.SubmittedBy;
         }
 
-        public string Id { get; set; }
+        public string? Id { get; set; }
         public string Question { get; set; }
         public int? Answer { get; set; }
         public string Option0 { get; set; }
@@ -32,7 +31,7 @@ namespace MattsTwitchBot.Web.Models
         public string Option2 { get; set; }
         public string Option3 { get; set; }
         public bool Approved { get; set; }
-        public string SubmittedBy { get; set; }
+        public string? SubmittedBy { get; set; }
 
         public void Validate(ModelStateDictionary modelState)
         {

@@ -26,6 +26,8 @@ namespace MattsTwitchBot.Tests.Fakes
         }
 
         public TimeSpan? Expiry => throw new NotImplementedException();
+        public DateTime? ExpiryTime { get; }
+
         #endregion  
     }
 }

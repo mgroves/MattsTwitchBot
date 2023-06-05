@@ -17,7 +17,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Dashboard
         public async Task<HomePageInfo> Handle(GetHomePageInfo request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("config");
 
             try
             {

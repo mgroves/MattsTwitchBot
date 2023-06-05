@@ -60,4 +60,6 @@ For static commands (commands which just show some fixed text), there must be a 
 
 index:
 
-CREATE INDEX ix_type ON twitchchat (type) WHERE type IS NOT MISSING;
+CREATE PRIMARY INDEX ix_profiles ON twitchchat._default.profiles
+CREATE PRIMARY INDEX ix_trivia ON twitchchat._default.trivia
+CREATE PRIMARY INDEX ix_messages ON twitchchat._default.messages

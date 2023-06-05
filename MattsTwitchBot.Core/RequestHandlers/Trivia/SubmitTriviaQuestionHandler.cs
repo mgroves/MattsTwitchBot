@@ -29,7 +29,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Trivia
                 id = Guid.NewGuid().ToString();
 
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("trivia");
 
             await collection.UpsertAsync(id, trivia);
 

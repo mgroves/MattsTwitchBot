@@ -1,18 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.202
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MattsTwitchBot.Web", "MattsTwitchBot.Web\MattsTwitchBot.Web.csproj", "{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattsTwitchBot.Web", "MattsTwitchBot.Web\MattsTwitchBot.Web.csproj", "{C23B4CB7-9710-4DD5-BFEE-81EB8BF820D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MattsTwitchBot.Core", "MattsTwitchBot.Core\MattsTwitchBot.Core.csproj", "{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattsTwitchBot.Core", "MattsTwitchBot.Core\MattsTwitchBot.Core.csproj", "{34AE79DE-488B-46E1-9C80-6AA98E4543A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MattsTwitchBot.Tests", "MattsTwitchBot.Tests\MattsTwitchBot.Tests.csproj", "{AB6E8FB2-93C2-4C15-9BE5-34E738869464}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DB0F3F0C-B65B-4A7B-BD00-52E05CFFC52A}"
-	ProjectSection(SolutionItems) = preProject
-		README.adoc = README.adoc
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MattsTwitchBot.Tests", "MattsTwitchBot.Tests\MattsTwitchBot.Tests.csproj", "{02AF57E7-44E5-4717-B699-799E651E3388}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,23 +15,23 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7ACA4140-DAF8-48A2-87AB-8481ACBE3BD3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF64670C-BE41-4E38-A9B7-56FAF5ED7251}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB6E8FB2-93C2-4C15-9BE5-34E738869464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB6E8FB2-93C2-4C15-9BE5-34E738869464}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB6E8FB2-93C2-4C15-9BE5-34E738869464}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB6E8FB2-93C2-4C15-9BE5-34E738869464}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C23B4CB7-9710-4DD5-BFEE-81EB8BF820D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C23B4CB7-9710-4DD5-BFEE-81EB8BF820D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C23B4CB7-9710-4DD5-BFEE-81EB8BF820D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C23B4CB7-9710-4DD5-BFEE-81EB8BF820D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34AE79DE-488B-46E1-9C80-6AA98E4543A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34AE79DE-488B-46E1-9C80-6AA98E4543A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34AE79DE-488B-46E1-9C80-6AA98E4543A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34AE79DE-488B-46E1-9C80-6AA98E4543A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02AF57E7-44E5-4717-B699-799E651E3388}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02AF57E7-44E5-4717-B699-799E651E3388}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02AF57E7-44E5-4717-B699-799E651E3388}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02AF57E7-44E5-4717-B699-799E651E3388}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {6D0A106E-B76E-4831-A53E-40750F68B42C}
+		SolutionGuid = {95DBD4F6-1EC4-45BE-8BB3-92DC316D3462}
 	EndGlobalSection
 EndGlobal

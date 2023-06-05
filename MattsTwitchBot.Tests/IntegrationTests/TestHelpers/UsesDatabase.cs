@@ -42,7 +42,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.TestHelpers
             // Also see the .github folder for how this is setup for Github Actions CI/CD
 
             Bucket = await TestCluster.BucketAsync(bucketName);
-            Collection = Bucket.DefaultCollection();
+            Collection = await Bucket.DefaultCollectionAsync();
             DocumentsToRemove = new List<string>();
             BucketProvider = new IntegrationTestBucketProvider(Bucket);
             TestKeyGen = new TestKeyGenerator(DocumentsToRemove);

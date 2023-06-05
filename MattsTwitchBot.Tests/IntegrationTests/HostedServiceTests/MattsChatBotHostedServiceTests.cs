@@ -42,7 +42,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.HostedServiceTests
 
             // assert - message was saved
             var findMessage = TestCluster.QueryAsync<dynamic>(
-                $"SELECT m.message FROM `{Bucket.Name}` m WHERE m.message = $message",
+                $"SELECT m.message FROM `{Bucket.Name}`._default.messages m WHERE m.message = $message",
                 QueryOptions.Create().Parameter("message", messageText).ScanConsistency(QueryScanConsistency.RequestPlus));
             var rows = await findMessage.Result.Rows.ToListAsync();
             Assert.That(rows.Count, Is.EqualTo(1));

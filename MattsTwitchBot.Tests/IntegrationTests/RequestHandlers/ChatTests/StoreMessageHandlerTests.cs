@@ -45,7 +45,7 @@ namespace MattsTwitchBot.Tests.IntegrationTests.RequestHandlers.ChatTests
             await _handler.Handle(request, CancellationToken.None);
 
             // assert
-            var n1ql = $"SELECT RAW COUNT(*) FROM `{Bucket.Name}` WHERE message = $expectedMessage";
+            var n1ql = $"SELECT RAW COUNT(*) FROM `{Bucket.Name}`._default.messages WHERE message = $expectedMessage";
             var result = await TestCluster.QueryAsync<int>(n1ql,
                 QueryOptions.Create().Parameter("expectedMessage", expectedMessage).ScanConsistency(QueryScanConsistency.RequestPlus));
             var count = await result.Rows.FirstOrDefaultAsync();

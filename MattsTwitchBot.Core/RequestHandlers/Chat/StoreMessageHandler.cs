@@ -18,7 +18,7 @@ namespace MattsTwitchBot.Core.RequestHandlers.Chat
         public async Task<Unit> Handle(StoreMessage request, CancellationToken cancellationToken)
         {
             var bucket = await _bucketProvider.GetBucketAsync();
-            var collection = bucket.DefaultCollection();
+            var collection = await bucket.CollectionAsync("messages");
 
             var message = request.Message;
             await collection.InsertAsync(_keyGen.NewDocKey(), message);
